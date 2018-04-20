@@ -11,6 +11,7 @@
 #include <graphics/face/vsx_face4.h>
 #include <color/vsx_color.h>
 #include <graphics/vsx_texcoord.h>
+#include <string/vsx_string.h>
 
 
 /*
@@ -143,33 +144,6 @@ public:
   }
 #endif
 
-  vsx_vbo_bucket()
-  {
-    m_flags = 0;
-
-    // offset values
-    offset_normals = 0;
-    offset_vertices = 0;
-    offset_texcoords = 0;
-    offset_vertex_colors = 0;
-    // vbo handles
-    vbo_id_vertex_normals_texcoords = 0;
-    vbo_id_draw_indices = 0;
-    // current - state - used to see if anything has changed
-    current_vbo_draw_type = 0;
-    current_num_vertices = 0;
-    current_num_colors = 0;
-    current_num_faces = 0;
-
-    // vbo handles
-    vbo_id_vertex_normals_texcoords = 0;
-    vbo_id_draw_indices = 0;
-
-    current_vbo_draw_type = 0;
-
-    invalidation_flags = 0;
-  }
-
   ~vsx_vbo_bucket()
   {
     destroy_vbo();
@@ -185,10 +159,10 @@ private:
   #endif
 
   // vbo index offsets
-  VBO_VBOB_TYPE offset_normals;
-  VBO_VBOB_TYPE offset_vertices;
-  VBO_VBOB_TYPE offset_texcoords;
-  VBO_VBOB_TYPE offset_vertex_colors;
+  VBO_VBOB_TYPE offset_normals = 0;
+  VBO_VBOB_TYPE offset_vertices = 0;
+  VBO_VBOB_TYPE offset_texcoords = 0;
+  VBO_VBOB_TYPE offset_vertex_colors = 0;
 
   // flag data
   #define VSX_VBOB_VERTICES 1
@@ -197,20 +171,20 @@ private:
   #define VSX_VBOB_TEXCOORDS 8
 
   // invalidation flags
-  unsigned char invalidation_flags;
+  unsigned char invalidation_flags = 0;
 
   // internal flags what buffers are enabled
-  unsigned char m_flags;
+  unsigned char m_flags = 0;
 
   // vbo handles
-  GLuint vbo_id_vertex_normals_texcoords;
-  GLuint vbo_id_draw_indices;
+  GLuint vbo_id_vertex_normals_texcoords = 0;
+  GLuint vbo_id_draw_indices = 0;
 
   // current - state - used to see if anything has changed
-  GLuint current_vbo_draw_type;
-  size_t current_num_vertices;
-  size_t current_num_colors;
-  size_t current_num_faces;
+  GLuint current_vbo_draw_type = 0;
+  size_t current_num_vertices = 0;
+  size_t current_num_colors = 0;
+  size_t current_num_faces = 0;
 
   inline void i_invalidate_vertices()
   {
@@ -234,9 +208,7 @@ private:
 
   bool init_vbo(GLuint draw_type = GL_DYNAMIC_DRAW_ARB)
   {
-    if (vbo_id_vertex_normals_texcoords) {
-      return true;
-    }
+    reqrv(!vbo_id_vertex_normals_texcoords, true);
     current_vbo_draw_type = draw_type;
     offset_normals = 0;
     offset_vertices = 0;
@@ -495,6 +467,15 @@ private:
 
     // handle invalidation instead
     if (!invalidation_flags) return;
+
+    if (vertices.size() != vertex_colors.size() && vertex_colors.size())
+      vsx_printf(L"WARNING: vbo: vertex count differs from vertex color count\n");
+
+    if (vertices.size() != vertex_normals.size() && vertex_normals.size())
+      vsx_printf(L"WARNING: vbo: vertex count differs from vertex normal count\n");
+
+    if (vertices.size() != vertex_tex_coords.size() && vertex_tex_coords.size())
+      vsx_printf(L"WARNING: vbo: vertex count differs from vertex tex coord count\n");
 
 
     if (check_if_need_to_reinit_vbo(current_vbo_draw_type))
