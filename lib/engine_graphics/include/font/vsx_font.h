@@ -22,8 +22,7 @@
 */
 
 
-#ifndef VSX_FONT_H
-#define VSX_FONT_H
+#pragma once
 
 #include <vsx_platform.h>
 #include <engine_graphics_dllimport.h>
@@ -36,6 +35,7 @@
 #include <vsx_platform.h>
 
 //#define VSX_FONT_ "\x01\x00\x00\x00\xff"
+
 #define VSX_FONT_C_TEX "\x01"
 #define VSX_FONT_C_OUTLINE "\x01"
 #define VSX_FONT_C_BLACK "\x01\x01\x01\xff"
@@ -55,6 +55,26 @@
 #define VSX_FONT_C_YELLOW "\xff\xff\x55\xff"
 #define VSX_FONT_C_WHITE "\xff\xff\xff\xff"
 
+#define WIDE_VSX_FONT_C_TEX L"\x01"
+#define WIDE_VSX_FONT_C_OUTLINE L"\x01"
+#define WIDE_VSX_FONT_C_BLACK L"\x01\x01\x01\xff"
+#define WIDE_VSX_FONT_C_BLUE L"\x01\x01\xaa\xff"
+#define WIDE_VSX_FONT_C_GREEN L"\x01\xaa\x01\xff"
+#define WIDE_VSX_FONT_C_CYAN L"\x01\xaa\xaa\xff"
+#define WIDE_VSX_FONT_C_RED L"\xaa\x01\x01\xff"
+#define WIDE_VSX_FONT_C_MAGENTA L"\xaa\x01\xaa\xff"
+#define WIDE_VSX_FONT_C_BROWN L"\xaa\x55\x01\xff"
+#define WIDE_VSX_FONT_C_GRAY L"\xaa\xaa\xaa\xff"
+#define WIDE_VSX_FONT_C_DARK_GRAY L"\x55\x55\x55\xff"
+#define WIDE_VSX_FONT_C_BRIGHT_BLUE L"\x55\x55\xff\xff"
+#define WIDE_VSX_FONT_C_BRIGHT_GREEN L"\x55\xff\x55\xff"
+#define WIDE_VSX_FONT_C_BRIGHT_CYAN L"\x55\xff\xff\xff"
+#define WIDE_VSX_FONT_C_BRIGHT_RED L"\xff\x55\x55\xff"
+#define WIDE_VSX_FONT_C_BRIGHT_MAGENTA L"\xff\x55\xff\xff"
+#define WIDE_VSX_FONT_C_YELLOW L"\xff\xff\x55\xff"
+#define WIDE_VSX_FONT_C_WHITE L"\xff\xff\xff\xff"
+
+
 class vsx_font_info {
 public:
   int type = 0; // 0 = texture (old) 1 = new (FtGL)
@@ -62,7 +82,7 @@ public:
   vsx_string<>name;
   void* ftfont = 0x0;
   void* ftfont_outline = 0x0;
-};  
+};
 
 class vsx_font {
   vsx_vector3<> ep;
@@ -100,8 +120,8 @@ public:
   // is it translucent or not?
   vsx_color<> color;
   float align;
-  
-  
+
+
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print(vsx_vector3<> p, const vsx_string<>& str, const float size, const vsx_string<>colors = "");
 
   vsx_vector3<> print(vsx_vector2f p, const vsx_string<>& str, const float size, const vsx_string<>colors = "")
@@ -113,7 +133,7 @@ public:
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_center(vsx_vector3<> p, const vsx_string<>& str, float size);
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> print_right(vsx_vector3<> p, const vsx_string<>& str, float size);
   VSX_ENGINE_GRAPHICS_DLLIMPORT vsx_vector3<> get_size(const vsx_string<>& str, float size);
-  
+
   vsx_font(vsx_string<>path)
   {
     base_path = path;
@@ -130,5 +150,3 @@ public:
 
   }
 };
-
-#endif

@@ -214,12 +214,12 @@ public:
 
 
         glColor4f(color.r, color.g, color.b, color.a);
-        font_inner->Render(lines[i].string.c_str());
+        font_inner->Render(lines[i].string.c_str(),  -1, FTPoint(), FTPoint(), FTGL::RENDER_ALL, color.a);
 
         if (render_type & outline)
         {
           glColor4f(color_outline.r, color_outline.g, color_outline.b, color_outline.a);
-          font_outline->Render(lines[i].string.c_str());
+          font_outline->Render(lines[i].string.c_str(), -1, FTPoint(), FTPoint(), FTGL::RENDER_ALL, color_outline.a);
         }
       gl_state->matrix_pop();
       ypos += leading / multiplier;
