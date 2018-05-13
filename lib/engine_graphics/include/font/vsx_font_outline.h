@@ -21,8 +21,7 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_FONT_OUTLINE_H
-#define VSX_FONT_OUTLINE_H
+#pragma once
 
 #include <color/vsx_color.h>
 #include <filesystem/vsx_filesystem.h>
@@ -35,7 +34,11 @@ template < typename W = char >
 class text_info {
 public:
   float size_x, size_y;
+  // full string for rendering with ftfont
   vsx_string<W> string;
+
+  // text-only string without color control characters
+  vsx_string<W> string_bare;
 };
 
 typedef enum vsx_font_outline_render_type_e
@@ -162,8 +165,19 @@ public:
     {
       float x1, y1, z1, x2, y2, z2;
       lines[i].string = t_lines[i];
+
+      for_n(j, 0, lines[i].string.size())
+      {
+        if (lines[i].string[j] == 1 || lines[i].string[j] == 2)
+        {
+          j += 4;
+          continue;
+        }
+        lines[i].string_bare += lines[i].string[j];
+      }
+
       FTFont* font = ((font_outline_holder*)font_holder)->get_inner();
-      font->BBox(t_lines[i].c_str(), x1, y1, z1, x2, y2, z2);
+      font->BBox(lines[i].string_bare.c_str(), x1, y1, z1, x2, y2, z2);
       lines[i].size_x = x2 - x1;
       lines[i].size_y = y2 - y1;
     }
@@ -257,7 +271,3 @@ public:
     gl_state->matrix_pop();
   }
 };
-
-
-#endif
-

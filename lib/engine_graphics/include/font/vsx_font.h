@@ -53,6 +53,7 @@
 #define VSX_FONT_C_BRIGHT_RED "\xff\x55\x55\xff"
 #define VSX_FONT_C_BRIGHT_MAGENTA "\xff\x55\xff\xff"
 #define VSX_FONT_C_YELLOW "\xff\xff\x55\xff"
+#define VSX_FONT_C_BRIGHT_YELLOW "\xff\xff\xAA\xff"
 #define VSX_FONT_C_WHITE "\xff\xff\xff\xff"
 
 #define WIDE_VSX_FONT_C_TEX L"\x01"
@@ -72,6 +73,7 @@
 #define WIDE_VSX_FONT_C_BRIGHT_RED L"\xff\x55\x55\xff"
 #define WIDE_VSX_FONT_C_BRIGHT_MAGENTA L"\xff\x55\xff\xff"
 #define WIDE_VSX_FONT_C_YELLOW L"\xff\xff\x55\xff"
+#define WIDE_VSX_FONT_C_BRIGHT_YELLOW L"\xff\xff\xAA\xff"
 #define WIDE_VSX_FONT_C_WHITE L"\xff\xff\xff\xff"
 
 
