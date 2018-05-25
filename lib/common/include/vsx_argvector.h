@@ -24,7 +24,13 @@
 #pragma once
 
 #include <vsx_platform.h>
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
+#include <SDL2/SDL.h>
+#endif
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
 #include <SDL.h>
+#endif
+
 #include <vsx_common_dllimport.h>
 
 #if PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX
