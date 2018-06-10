@@ -53,7 +53,7 @@ public:
 
   void set_allocation_increment(unsigned long new_increment) VSX_ALWAYS_INLINE
   {
-  	allocation_increment = new_increment;
+    allocation_increment = new_increment;
   }
 
 
@@ -150,6 +150,17 @@ public:
     return (*this)[used-1];
   }
 
+  inline void swap(size_t a, size_t b)
+  {
+    req(a < used);
+    req(b < used);
+    req(a != b);
+    T temp = std::move(A[b]);
+    A[b] = std::move(A[a]);
+    A[a] = std::move(temp);
+  }
+
+
   inline void clear() VSX_ALWAYS_INLINE
   {
     req(!data_volatile);
@@ -169,7 +180,7 @@ public:
 
   inline void reset_used(size_t val = 0) VSX_ALWAYS_INLINE
   {
-  	// TODO: if value larger than count of allocated items in memory handle this some way
+    // TODO: if value larger than count of allocated items in memory handle this some way
     used = val;
   }
 

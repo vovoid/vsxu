@@ -113,6 +113,16 @@ public:
     return &A[used-1];
   }
 
+  inline void swap(size_t a, size_t b)
+  {
+    req(a < used);
+    req(b < used);
+    req(a != b);
+    T temp = std::move(A[b]);
+    A[b] = std::move(A[a]);
+    A[a] = std::move(temp);
+  }
+
   inline size_t size() VSX_ALWAYS_INLINE
   {
     return used;
@@ -151,7 +161,7 @@ public:
 
   inline void set_allocation_increment(unsigned long new_increment)  VSX_ALWAYS_INLINE
   {
-  	allocation_increment = new_increment;
+    allocation_increment = new_increment;
   }
 
   void set_data(T* nA, size_t nsize) VSX_ALWAYS_INLINE
