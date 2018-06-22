@@ -6,22 +6,22 @@
 
 void gravity_strip::init_strip()
 {
-	length = 1.0f;
-  	thin_edges = true;
-	curr_time = 0.0f;
-	last_step_time = 0.0f;
-	step_freq = 100.0f;
-	offs = 0;
+  length = 1.0f;
+    thin_edges = true;
+  curr_time = 0.0f;
+  last_step_time = 0.0f;
+  step_freq = 100.0f;
+  offs = 0;
 
 
-	num_lines = 1;
+  num_lines = 1;
   vsx_vector3<> v;
 
-	Mass m;
-	m.init(v,v,7 / (rand() / (float)RAND_MAX * 2.5f + 0.35f));
-	masses.push_back(m);
+  Mass m;
+  m.init(v,v,7 / (rand() / (float)RAND_MAX * 2.5f + 0.35f));
   masses.push_back(m);
-	first = true;
+  masses.push_back(m);
+  first = true;
 }
 
 vsx_timer timer;
@@ -37,7 +37,7 @@ void gravity_strip::render()
     if (length > 1.0f) length = 1.0f;
     if (length < 0.01f) length = 0.01f;
     int num = (int)((float)BUFF_LEN * length);
-    float fnum = num;
+    float fnum = (float)num;
     int i_ofs = offs - num;
     if (i_ofs < 0) i_ofs += BUFF_LEN;
     glColor4f(color0[0]*p_ + p * color1[0],
