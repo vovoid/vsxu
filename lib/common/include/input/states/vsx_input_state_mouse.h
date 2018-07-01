@@ -18,6 +18,10 @@ public:
   vsx_vector2f position_click_middle;
   vsx_vector2f position_click_right;
 
+
+  float viewport_override_width = 0;
+  float viewport_override_height = 0;
+
   bool buttons[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   bool button_left = false;
   bool button_middle = false;
@@ -47,6 +51,20 @@ public:
     return vsx_vector2f(-0.5, -0.5) + position_click_right;
   }
 
+  float get_viewport_width()
+  {
+    if (viewport_override_width > 0)
+      return viewport_override_width;
+    return (float)vsx_gl_state::get()->viewport_get_width();
+  }
+
+  float get_viewport_height()
+  {
+    if (viewport_override_height > 0)
+      return viewport_override_height;
+    return (float)vsx_gl_state::get()->viewport_get_height();
+  }
+
   void reset()
   {
     position_changed_since_last_frame = false;
@@ -60,8 +78,8 @@ public:
     {
       position_screen.x = (float)event.mouse.x;
       position_screen.y = (float)event.mouse.y;
-      position.x = (float)event.mouse.x / (float)vsx_gl_state::get()->viewport_get_width();
-      position.y = (float)event.mouse.y / (float)vsx_gl_state::get()->viewport_get_height();
+      position.x = (float)event.mouse.x / get_viewport_width();
+      position.y = (float)event.mouse.y / get_viewport_height();
       dragging = button_left || button_right;
       position_changed_since_last_frame = true;
       return;

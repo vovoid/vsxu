@@ -17,8 +17,8 @@ public:
   vsx_widget_checkbox(vsx_string<> title)
   {
     label = dynamic_cast<vsx_widget_label*>( add(new vsx_widget_label(), "label") );
-    label->set_pos( vsx_vector3f( -0.1, 0.0 ) );
-    label->set_size( vsx_vector3f(0.1, 0.1) );
+    label->set_pos( vsx_vector3f( -0.1f, 0.0 ) );
+    label->set_size( vsx_vector3f(0.1f, 0.1f) );
     label->set_font_size( 0.08f );
     label->title = title;
     label->halign = a_left;
@@ -31,8 +31,8 @@ public:
 
 
     button = dynamic_cast<vsx_widget_button*>( add(new vsx_widget_button(), "button") );
-    button->set_pos( vsx_vector3f( 0.1, 0.0));
-    button->set_size( vsx_vector3f(0.05, 0.1));
+    button->set_pos( vsx_vector3f( 0.1f, 0.0));
+    button->set_size( vsx_vector3f(0.05f, 0.1f));
     button->title = "[ ]";
     button->set_font_size( 0.08f );
     button->on_click =
@@ -62,8 +62,8 @@ public:
     label->set_size(vsx_vector3f(size.x - 0.05f , size.y) );
     label->set_pos( vsx_vector3f( -0.025f, 0) );
     label->set_font_size(font_size);
-    button->set_size( vsx_vector3f(0.2 * size.x, size.y));
-    button->set_pos( vsx_vector3f( size.x * 0.5f - 0.2 * size.x, 0.0));
+    button->set_size( vsx_vector3f(0.2f * size.x, size.y));
+    button->set_pos( vsx_vector3f( size.x * 0.5f - 0.2f * size.x, 0.0));
     button->set_font_size(font_size);
   }
 
