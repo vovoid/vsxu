@@ -25,7 +25,7 @@
 
 #include <command/vsx_command_list.h>
 #include <vsx_engine.h>
-
+#include <vsx_engine_helper.h>
 
 template <int num_engines = 64>
 class vsx_engine_helper_pool

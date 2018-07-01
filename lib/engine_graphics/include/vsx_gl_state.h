@@ -459,7 +459,7 @@ private:
 public:
   void polygon_mode_set(int face, int mode)
   {
-    if (_polygon_mode[face] == mode) return;
+//    if (_polygon_mode[face] == mode) return;
     _polygon_mode[face] = mode;
     #ifndef VSX_NO_GL
       glPolygonMode(

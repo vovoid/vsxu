@@ -27,7 +27,7 @@
 #include <vsx_widget.h>
 #include <gl_helper.h>
 
-enum align{
+enum h_align{
   a_left,
   a_center,
   a_right
@@ -51,7 +51,7 @@ public:
     return false;
   }
 
-  align halign;
+  h_align halign;
 
   void init()
   {
@@ -115,7 +115,7 @@ public:
 
     glColor3f(1,1,1);
     position.y -= font_size*0.5f;
-    switch ((align)halign) {
+    switch ((h_align)halign) {
       case a_left:
         position.x -= size.x * 0.5f;
         font.print(position, title,font_size);

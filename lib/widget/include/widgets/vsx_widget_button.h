@@ -105,11 +105,11 @@ public:
       i_pos.y += size.y*0.5f;
     }
 
-    float font_size_smaller = 1.0f;
+    float font_size_smaller = 1;
 
     if ((m_focus == this) && !outside)
     {
-      font_size_smaller = 0.75f;
+      font_size_smaller *= 0.75f;
       vsx_widget_skin::get_instance()->set_color_gl(0);
     }
     else

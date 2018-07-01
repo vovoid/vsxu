@@ -22,6 +22,7 @@
 /*
  * _configuration.h
  */
+#ifdef BUILDING_DLL
 
 #ifndef _CONFIGURATION_H_
 #define _CONFIGURATION_H_
@@ -56,3 +57,4 @@
 
 #endif /* _CONFIGURATION_H_ */
 
+#endif

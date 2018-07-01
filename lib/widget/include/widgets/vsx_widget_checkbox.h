@@ -51,12 +51,20 @@ public:
       button->title = "[ ]";
   }
 
+  void set_checked(bool value)
+  {
+    checked = value;
+    set_button_title_by_checked();
+  }
+
   void recalculate_sizes()
   {
-    label->set_size(vsx_vector3f(size.x - 0.05f , 0.1) );
+    label->set_size(vsx_vector3f(size.x - 0.05f , size.y) );
     label->set_pos( vsx_vector3f( -0.025f, 0) );
-    button->set_size( vsx_vector3f(0.05, 0.1));
-    button->set_pos( vsx_vector3f( size.x * 0.5f - 0.025, 0.0));
+    label->set_font_size(font_size);
+    button->set_size( vsx_vector3f(0.2 * size.x, size.y));
+    button->set_pos( vsx_vector3f( size.x * 0.5f - 0.2 * size.x, 0.0));
+    button->set_font_size(font_size);
   }
 
   void i_draw()
