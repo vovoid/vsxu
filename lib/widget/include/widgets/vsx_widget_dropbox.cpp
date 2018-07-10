@@ -15,6 +15,9 @@ void vsx_widget_dropbox::on_select(vsx_command_s &command)
 
 vsx_widget_dropbox::vsx_widget_dropbox(vsx_string<> title)
 {
+  allow_move_x = false;
+  allow_move_y = false;
+
   label = dynamic_cast<vsx_widget_label*>( add(new vsx_widget_label(), "label") );
   label->set_pos( vsx_vector3f( -0.1f, 0.0 ) );
   label->set_size( vsx_vector3f(0.1f, 0.1f) );
@@ -112,6 +115,11 @@ void vsx_widget_dropbox::select_by_title(vsx_string<> title)
       selected = i;
       return;
     }
+}
+
+void vsx_widget_dropbox::event_mouse_up(vsx_widget_distance distance, vsx_widget_coords coords, int button)
+{
+  show_menu();
 }
 
 size_t vsx_widget_dropbox::get_selected_index()

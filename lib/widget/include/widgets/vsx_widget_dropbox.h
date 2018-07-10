@@ -36,29 +36,18 @@ public:
   size_t selected = 0;
 
   std::function<void(size_t, vsx_string<>&)> on_selection = [](size_t value, vsx_string<>& title){};
-
   vsx_widget_dropbox(vsx_string<> title);
-
   void show_menu();
-
   void recalculate_sizes();
-
   void reset_options();
-
   bool has_options();
-
   size_t get_option_count();
-
   void set_option_title(size_t index, vsx_string<> title);
-
   void add_option(int value, vsx_string<> title);
-
   void select_by_title(vsx_string<> title);
-
+  void event_mouse_up(vsx_widget_distance distance,vsx_widget_coords coords,int button);
   size_t get_selected_index();
-
   vsx_string<> get_selected_title();
-
   void i_draw();
 
 };

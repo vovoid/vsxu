@@ -10,6 +10,9 @@ bool vsx_widget_label::inside_xyd(vsx_vector3<> world, vsx_vector3<> screen)
 
 void vsx_widget_label::init()
 {
+  allow_move_x = false;
+  allow_move_y = false;
+
   halign = a_center;
   font_size = size.y = 0.014f;
   set_render_type(vsx_widget_render_type::render_2d);

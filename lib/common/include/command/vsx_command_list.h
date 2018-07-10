@@ -45,7 +45,7 @@ public:
   void set_accept_commands(int new_value)
   {
     accept_commands = new_value;
-  } 
+  }
 
   // add copy of command at the end of the list
   T* addc(T* cmd, bool garbage_collect = false)
@@ -173,7 +173,6 @@ public:
   }
 
 
-  // adds a command
   // Thread safety: YES
   void add(vsx_string<>cmd, int cmd_data, bool garbage_collect = false)
   {
@@ -195,8 +194,7 @@ public:
 
   void adds(int tp, vsx_string<>title, vsx_string<>cmd, vsx_string<>cmd_data)
   {
-    if (!accept_commands)
-      return;
+    req(accept_commands);
 
     T* t = new T;
     t->type = tp;
@@ -217,6 +215,15 @@ public:
     commands.push_back(t);
   }
 
+  void add_action(int type, vsx_string<> title, std::function<void()> action)
+  {
+    req(accept_commands);
+    T* t = new T;
+    t->type = type;
+    t->title = std::move(title);
+    t->action = action;
+    commands.push_back(t);
+  }
 
   void clear_normal()
   {

@@ -12,70 +12,20 @@ class vsx_widget_checkbox
 
 public:
 
-  bool checked = false;
-
-  vsx_widget_checkbox(vsx_string<> title)
+  union
   {
-    label = dynamic_cast<vsx_widget_label*>( add(new vsx_widget_label(), "label") );
-    label->set_pos( vsx_vector3f( -0.1f, 0.0 ) );
-    label->set_size( vsx_vector3f(0.1f, 0.1f) );
-    label->set_font_size( 0.08f );
-    label->title = title;
-    label->halign = a_left;
-    label->on_click =
-      [this]()
-      {
-        checked = !checked;
-        set_button_title_by_checked();
-      };
+    bool checked = false;
+    bool value;
+  };
 
+  vsx_widget_checkbox(vsx_string<> title);
 
-    button = dynamic_cast<vsx_widget_button*>( add(new vsx_widget_button(), "button") );
-    button->set_pos( vsx_vector3f( 0.1f, 0.0));
-    button->set_size( vsx_vector3f(0.05f, 0.1f));
-    button->title = "[ ]";
-    button->set_font_size( 0.08f );
-    button->on_click =
-      [this]()
-      {
-        checked = !checked;
-        set_button_title_by_checked();
-      };
-  }
+  void set_button_title_by_checked();
 
-  void set_button_title_by_checked()
-  {
-    if (checked)
-      button->title = "[x]";
-    else
-      button->title = "[ ]";
-  }
+  void set_checked(bool value);
 
-  void set_checked(bool value)
-  {
-    checked = value;
-    set_button_title_by_checked();
-  }
+  void recalculate_sizes();
 
-  void recalculate_sizes()
-  {
-    label->set_size(vsx_vector3f(size.x - 0.05f , size.y) );
-    label->set_pos( vsx_vector3f( -0.025f, 0) );
-    label->set_font_size(font_size);
-    button->set_size( vsx_vector3f(0.2f * size.x, size.y));
-    button->set_pos( vsx_vector3f( size.x * 0.5f - 0.2f * size.x, 0.0));
-    button->set_font_size(font_size);
-  }
-
-  void i_draw()
-  {
-    recalculate_sizes();
-    draw_box_gradient(
-          get_pos_p() - vsx_vector3f(size.x * 0.5f, size.y * 0.5f),
-          size.x, size.y,
-          vsx_widget_skin::get_instance()->get_color(1), vsx_widget_skin::get_instance()->get_color(1),
-          vsx_widget_skin::get_instance()->get_color(1), vsx_widget_skin::get_instance()->get_color(1)
-    );
-  }
+  void i_draw();
 
 };

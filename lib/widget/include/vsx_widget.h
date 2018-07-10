@@ -137,7 +137,7 @@ public:
   vsx_string<>name; // internal name
   vsx_string<>title; // title, for public display
   vsx_string<>help_text; // help text for this widget
-  unsigned int widget_type; // for finding out what type arbitrary widgets have so one can typecast correctly
+  unsigned int widget_type = VSX_WIDGET_TYPE_WIDGET; // for finding out what type arbitrary widgets have so one can typecast correctly
   vsx_widget_render_type render_type; // 2d or 3d drawing mode
   unsigned int coord_type; // centralized or corner-based coordinates?
   bool coord_related_parent = true; // coordinate relation with parent? or standalone?
@@ -169,10 +169,10 @@ public:
   vsx_vector3<> size;
   vsx_vector3<> target_size;
   vsx_vector3<> size_min, size_max;
-  bool allow_resize_x;
-  bool allow_resize_y;
-  bool allow_move_x;
-  bool allow_move_y;
+  bool allow_resize_x = false;
+  bool allow_resize_y = false;
+  bool allow_move_x = true;
+  bool allow_move_y = true;
 
   int resize_i;
   double dragborder;
@@ -188,7 +188,7 @@ public:
 
   vsx_color<> color;
   // topmost, right now only one widget can be topmost (and its children)
-  bool topmost;
+  bool topmost = false;
 
   // 2d gui stuff
   float visible = 1.0f;

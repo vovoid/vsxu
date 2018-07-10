@@ -97,15 +97,10 @@ vsx_widget::vsx_widget()
   size.y = 20; // y size
   size.z = 0; // z size
   support_interpolation = false;
-  topmost = false;
   size_min.x = 0.1f;
   size_min.y = 0.1f;
   marked_for_deletion = false;
   resize_i = 0;
-  allow_move_x = true;
-  allow_move_y = true;
-  allow_resize_x = false;
-  allow_resize_y = false;
   dragborder = 0.0025;
   support_scaling = false;
   font_size = 0.025f;

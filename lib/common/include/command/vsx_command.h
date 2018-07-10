@@ -29,6 +29,7 @@
 #include <iomanip>
 #include <list>
 #include <vector>
+#include <functional>
 #include <filesystem/vsx_filesystem.h>
 #include <string/vsx_string_helper.h>
 #include <vsx_common_dllimport.h>
@@ -70,17 +71,39 @@ COMMON_DLLIMPORT class vsx_command_s
 public:
   COMMON_DLLIMPORT static int id;
 
+  // how many times it has been passed around
   int iterations = 0;
+
   bool garbage_collected = false;
+
   bool parsed = false;
-  int owner = 0; // for color-coding this command
-  int type = 0; // type of command
-  vsx_string<> title; // Title - for internal GUI stuff like menus and stuff
-  vsx_string<> cmd; // the first part of the command, the actual command
-  vsx_string<> cmd_data; // the second parameter (for simple commands)
-  vsx_nw_vector<char> cmd_data_bin; // the binary part of the command
-  vsx_string<> raw; // the unparsed command, empty when binary command
-  vsx_nw_vector< vsx_string<> > parts; // the parts of the command
+
+  // for color-coding this command
+  int owner = 0;
+
+  // type of command
+  int type = 0;
+
+  // Title - for internal GUI stuff. For example, menus
+  vsx_string<> title;
+
+  // primary part of the command
+  vsx_string<> cmd;
+
+  // parameter (for simple commands)
+  vsx_string<> cmd_data;
+
+  // binary part of the command
+  vsx_nw_vector<char> cmd_data_bin;
+
+  // unparsed command, empty when binary command
+  vsx_string<> raw;
+
+  // parts of the command
+  vsx_nw_vector< vsx_string<> > parts;
+
+  // additional action, used in menus
+  std::function<void()> action = [](){};
 
   vsx_command_s()
   {
@@ -123,9 +146,9 @@ public:
 
   void dump_to_stdout()
   {
-  	for (size_t i = 0; i < parts.size(); i++)
-  	printf("%s ",parts[i].c_str());
-  	printf("\n");
+    for (size_t i = 0; i < parts.size(); i++)
+    printf("%s ",parts[i].c_str());
+    printf("\n");
   }
 };
 

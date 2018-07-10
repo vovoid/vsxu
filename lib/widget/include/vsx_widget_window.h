@@ -21,17 +21,21 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_WIDGET_WINDOW_H_
-#define VSX_WIDGET_WINDOW_H_
+#pragma once
 
 #include <vsx_widget.h>
+#include <widgets/vsx_widget_button.h>
 
 class WIDGET_DLLIMPORT vsx_widget_window : public vsx_widget {
-	vsx_widget* button_close;
+  vsx_widget_button* button_close;
 
 public:
 
-	vsx_widget_window();
+  std::function<void()> on_close_click = [this](){
+    visible = 0;
+  };
+
+  vsx_widget_window();
   virtual void init();
   virtual void i_draw();
 
@@ -45,9 +49,4 @@ public:
     return vsx_vector3<>(size.x * 0.5f, size.y * 0.5f - font_size * 0.5f + (float)dragborder*0.5f);
   }
 
-
 };
-
-
-
-#endif /*VSX_WIDGET_WINDOW_H_*/
