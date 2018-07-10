@@ -69,6 +69,12 @@ public:
     init_run = true;
   }
 
+  void clear()
+  {
+    commands.clear_delete();
+    menu_items.clear_delete();
+  }
+
   void init_extra_commands()
   {
     commands.reset();

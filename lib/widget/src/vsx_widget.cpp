@@ -77,7 +77,6 @@ vsx_widget::vsx_widget()
   interpolating_pos = false;
   render_type = render_3d;
   coord_type = VSX_WIDGET_COORD_CENTER;
-  coord_related_parent = true;
   init_run = false;
   id = static_widget_id_accumulator;
   global_index_list[id] = this;
@@ -353,7 +352,7 @@ vsx_widget* vsx_widget::find_component(vsx_widget_coords coords, vsx_widget_dist
 
 void vsx_widget::input_mouse_wheel(float y)
 {
-	if (m_o_focus)
+  if (m_o_focus)
     m_o_focus->event_mouse_wheel(y);
 }
 
@@ -762,7 +761,7 @@ void vsx_widget::on_delete()
 
 void vsx_widget::move(double x, double y, double z)
 {
-	event_move_scale();
+  event_move_scale();
 
   if (constrained_x)
   {
@@ -1095,7 +1094,7 @@ void vsx_widget::resize_to(vsx_vector3<> to_size)
   if (target_size.y < size_min.y)
     to_size.y = size_min.y;
 
-	event_move_scale();
+  event_move_scale();
 
   if (support_interpolation)
   {
@@ -1123,9 +1122,9 @@ void vsx_widget::draw()
 
 void vsx_widget::draw_2d()
 {
-	#ifdef VSX_DEBUG
-	printf("draw 2d: %s\n",name.c_str());
-	#endif
+  #ifdef VSX_DEBUG
+  printf("draw 2d: %s\n",name.c_str());
+  #endif
   req(visible > 0.0f);
 
   if (render_type == render_2d)
@@ -1135,8 +1134,8 @@ void vsx_widget::draw_2d()
   draw_children_2d();
 
   #ifdef VSX_DEBUG
-	printf("end_draw 2d: %s\n",name.c_str());
-	#endif
+  printf("end_draw 2d: %s\n",name.c_str());
+  #endif
 }
 
 

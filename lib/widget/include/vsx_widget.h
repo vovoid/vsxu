@@ -140,7 +140,7 @@ public:
   unsigned int widget_type; // for finding out what type arbitrary widgets have so one can typecast correctly
   vsx_widget_render_type render_type; // 2d or 3d drawing mode
   unsigned int coord_type; // centralized or corner-based coordinates?
-  bool coord_related_parent; // coordinate relation with parent? or standalone?
+  bool coord_related_parent = true; // coordinate relation with parent? or standalone?
 
   vsx_vector3<> mouse_pos; // last translated mouse pos
 
@@ -245,10 +245,10 @@ public:
     }
     // ok, we've processed the commands, now call our parent to go through our list
     if (
-    			(parent != this)
-    			&&
-    			(source != this)
-    	 )
+          (parent != this)
+          &&
+          (source != this)
+       )
     {
       if (cmd_parent)
       {
@@ -269,7 +269,7 @@ public:
   inline void message(const vsx_string<>&message)
   {
     command_q_b.add_raw(message);
-  	this->vsx_command_queue_b(this);
+    this->vsx_command_queue_b(this);
   }
 
 
@@ -287,7 +287,7 @@ public:
     for (children_iter=children.begin(); children_iter != children.end(); ++children_iter)
     (*children_iter)->vsx_command_process_f();
   }
-	//-------------------------------------------------------------
+  //-------------------------------------------------------------
 
 
   // find operations
