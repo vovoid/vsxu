@@ -175,10 +175,11 @@ void vsx_widget_popup_menu::i_draw()
       draw_box(vsx_vector3<>((sx-0.001f)*screen_aspect,target_pos.y+0.001f+target_size.y),(size.x+0.002f)*screen_aspect,-((float)menu_items.count())*row_size-0.002f);
   }
   else
-  {
-    draw_box(vsx_vector3<>((sx-0.001f)*screen_aspect,target_pos.y+0.001f+target_size.y),(size.x+0.002f)*screen_aspect,-((float)menu_items.count())*row_size-0.002f);
-    font.print(vsx_vector3<>(sx*screen_aspect,target_pos.y+target_size.y), parent->title, row_size);
-  }
+    if (draw_title)
+    {
+      draw_box(vsx_vector3<>((sx-0.001f)*screen_aspect,target_pos.y+0.001f+target_size.y),(size.x+0.002f)*screen_aspect,-((float)menu_items.count())*row_size-0.002f);
+      font.print(vsx_vector3<>(sx*screen_aspect,target_pos.y+target_size.y), parent->title, row_size);
+    }
 
   float y = target_pos.y+target_size.y;
   vsx_command_s *t;

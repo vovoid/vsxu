@@ -38,6 +38,7 @@ public:
   vsx_command_s* current_command_over = 0x0;
   int id_over = 0;
   int over = 0;
+  bool draw_title = true;
 
   std::function<void(vsx_command_s&)> on_selection = [](vsx_command_s& command){};
 

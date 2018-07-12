@@ -24,11 +24,11 @@ vsx_widget_checkbox::vsx_widget_checkbox(vsx_string<> title)
   button->title = "[ ]";
   button->set_font_size( 0.08f );
   button->on_click =
-      [this]()
-  {
-    checked = !checked;
-    set_button_title_by_checked();
-  };
+    [this]()
+    {
+      checked = !checked;
+      set_button_title_by_checked();
+    };
 }
 
 void vsx_widget_checkbox::set_button_title_by_checked()
@@ -53,6 +53,12 @@ void vsx_widget_checkbox::recalculate_sizes()
   button->set_size( vsx_vector3f(0.2f * size.x, size.y));
   button->set_pos( vsx_vector3f( size.x * 0.5f - 0.2f * size.x, 0.0));
   button->set_font_size(font_size);
+}
+
+void vsx_widget_checkbox::event_mouse_up(vsx_widget_distance distance, vsx_widget_coords coords, int button)
+{
+  checked = !checked;
+  set_button_title_by_checked();
 }
 
 void vsx_widget_checkbox::i_draw()
