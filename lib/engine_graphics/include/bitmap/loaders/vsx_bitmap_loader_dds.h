@@ -211,10 +211,10 @@ class vsx_bitmap_loader_dds
     for( unsigned int mip_map_level = 0; mip_map_level < header->mip_map_count; ++mip_map_level )
     {
       size_t size = MAX( 1, (x + 3) / 4 ) *  (MAX( 1, (y + 3) / 4 )) * bytes_per_block;
-      
+
       bitmap->data_set( data + file_index, mip_map_level, cube_map_side, size );
       file_index += size;
- 
+
       x /= 2;
       y /= 2;
       if (!x)
@@ -230,7 +230,7 @@ class vsx_bitmap_loader_dds
     vsx::file* file_handle = filesystem->f_open(filename.c_str());
     if (!file_handle)
     {
-      vsx_printf(L"%hs\n", vsx_string<>( ("error loading DDS texture: ") + filename).c_str());
+      vsx_printf(L"%hs\n", vsx_string<>( ("error opening file: ") + filename).c_str());
       return 0;
     }
 

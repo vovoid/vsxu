@@ -21,7 +21,8 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
   reqrv(header->identifier[2] == 'X', false);
   reqrv(header->identifier[3] == 'Z', false);
 
-  uncompressed_data.allocate(header->compression_uncompressed_memory_size - 1);
+  if (header->compression_uncompressed_memory_size)
+    uncompressed_data.allocate(header->compression_uncompressed_memory_size - 1);
 
   vsxz_header_chunk_info* chunk_info_table =
       (vsxz_header_chunk_info*) (
@@ -126,6 +127,12 @@ void filesystem_archive_vsxz_reader::file_open(const char* filename, file* &hand
 void filesystem_archive_vsxz_reader::close()
 {
   filesystem_mmap::destroy(mmap);
+
+#if PLATFORM == PLATFORM_WINDOWS
+  if (uncompressed_data_start_pointers[0])
+    free(uncompressed_data_start_pointers[0]);
+#endif
+
   header = 0x0;
   uncompressed_data.clear();
 }

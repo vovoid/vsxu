@@ -186,8 +186,7 @@ public:
 
 
   inline void allocate_bytes(size_t b) VSX_ALWAYS_INLINE
-  {
-    if (A)
+  { if (A)
       vsx_aligned_free(A);
 
     A = (T*)vsx_aligned_malloc( b );
