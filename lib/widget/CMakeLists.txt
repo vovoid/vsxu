@@ -60,20 +60,11 @@ endif()
 # SOURCES ######################################################################
 ################################################################################
 
-set(SOURCES
-  src/vsx_widget.cpp
-  src/vsx_widget_camera.cpp
-  src/vsx_widget_coords.cpp
-  src/vsx_widget_skin.cpp
-  src/vsx_widget_time.cpp
-  src/vsx_widget_window.cpp
-  src/vsx_widget_global_interpolation.cpp
-  src/widgets/vsx_widget_2d_pager.cpp
-  src/widgets/vsx_widget_base_edit.cpp
-  src/widgets/vsx_widget_panel.cpp
-  src/widgets/vsx_widget_scrollbar.cpp
-)
-file(GLOB_RECURSE HEADER_FILES *.h)
+file(GLOB_RECURSE SOURCES include/*.h)
+file(GLOB_RECURSE SOURCES_CPP include/*.cpp)
+set(SOURCES ${SOURCES} ${SOURCES_CPP})
+file(GLOB_RECURSE SOURCES_CPP src/*.cpp)
+set(SOURCES ${SOURCES} ${SOURCES_CPP})
 
 ################################################################################
 # LINKAGE ######################################################################
@@ -82,12 +73,12 @@ file(GLOB_RECURSE HEADER_FILES *.h)
 if (VSXU_STATIC EQUAL 1)
 
   #static build
-  add_library(${module_id} STATIC ${SOURCES} ${HEADER_FILES})
+  add_library(${module_id} STATIC ${SOURCES})
 
 else ()
 
   #dynamic build
-  add_library(${module_id} SHARED ${SOURCES} ${HEADER_FILES})
+  add_library(${module_id} SHARED ${SOURCES})
 
 endif ()
 

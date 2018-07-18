@@ -43,23 +43,16 @@ endif (VSXU_DEBUG EQUAL 1)
 
 set(SOURCES
   third-party/mt/mt.cc
-  src/vsx_argvector.cpp
-  src/math/vsx_rand.cpp
-  src/audio/vsx_audio_mixer_manager.cpp
-  src/vsx_data_path.cpp
-  src/log/vsx_log.cpp
-  src/command/vsx_command.cpp
-  src/filesystem/archive/vsx_filesystem_archive_reader.cpp
-  src/filesystem/archive/vsx/vsx_filesystem_archive_vsx_reader.cpp
-  src/filesystem/archive/vsx/vsx_filesystem_archive_vsx_writer.cpp
-  src/filesystem/archive/vsxz/vsx_filesystem_archive_chunk_write.cpp
-  src/filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_reader.cpp
-  src/filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_info.cpp
-  src/filesystem/archive/vsxz/vsx_filesystem_archive_vsxz_writer.cpp
-  src/filesystem/vsx_filesystem_helper.cpp
-  src/filesystem/vsx_filesystem.cpp
-  src/string/vsx_json.cpp
 )
+
+file(GLOB_RECURSE SOURCES_HEADERS include/*.h)
+set(SOURCES ${SOURCES} ${SOURCES_HEADERS} )
+
+file(GLOB_RECURSE SOURCES_HEADERS src/*.cpp)
+set(SOURCES ${SOURCES} ${SOURCES_HEADERS} )
+
+file(GLOB_RECURSE SOURCES_HEADERS include/*.cpp)
+set(SOURCES ${SOURCES} ${SOURCES_HEADERS} )
 
 if (NOT WIN32)
   set(SOURCES ${SOURCES} src/command/vsx_command_client_server.cpp)

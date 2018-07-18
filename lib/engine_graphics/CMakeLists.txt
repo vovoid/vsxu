@@ -50,15 +50,11 @@ endif (VSXU_DEBUG EQUAL 1)
 # SOURCES ######################################################################
 ################################################################################
 
-set(SOURCES
-  src/logo_intro.cpp
-  src/font/vsx_font.cpp
-  src/font/vsx_font_outline.cpp
-  src/vsx_gl_state.cpp
-  src/gl_helper.cpp
-  src/bitmap/loaders/vsx_bitmap_loader_jpg.cpp
-  src/bitmap/loaders/vsx_bitmap_loader_png.cpp
-)
+file(GLOB_RECURSE SOURCES include/*.h)
+file(GLOB_RECURSE SOURCES_CPP include/*.cpp)
+set(SOURCES ${SOURCES} ${SOURCES_CPP})
+file(GLOB_RECURSE SOURCES_CPP src/*.cpp)
+set(SOURCES ${SOURCES} ${SOURCES_CPP})
 
 #ftgl
 include_directories(
@@ -177,7 +173,7 @@ thirdparty/mini-jpeg
 file(GLOB_RECURSE HEADER_FILES *.h)
 
 
-if (VSXU_STATIC EQUAL 1)  
+if (VSXU_STATIC EQUAL 1)
   #static build
   add_library(${module_id} STATIC ${SOURCES} ${SOURCES_FTGL} ${SOURCES_PERLIN} ${HEADER_FILES} ${SOURCES_LODEPNG})
 else ()

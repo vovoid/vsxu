@@ -23,6 +23,9 @@
 
 
 #include <vsx_platform.h>
+
+#if PLATFORM_FAMILY != PLATFORM_FAMILY_WINDOWS
+
 #include <command/vsx_command_client_server.h>
 
 
@@ -97,7 +100,7 @@ void vsx_command_list_server::server_worker()
   ssize_t size_recv;
   int keepalive_timer = 0;
   vsx_string<>message_stack;
-  
+
   memset(&hints, 0, sizeof hints); // make sure the struct is empty
   hints.ai_family = AF_INET; //AF_INET6 or AF_UNSPEC
   hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
@@ -321,7 +324,7 @@ void vsx_command_list_client::client_worker()
   ssize_t size_recv;
   int keepalive_timer = 0;
   vsx_string<>message_stack;
-  
+
   memset(&hints, 0, sizeof hints); // make sure the struct is empty
   hints.ai_family = AF_UNSPEC;     // don't care IPv4 or IPv6
   hints.ai_socktype = SOCK_STREAM; // TCP stream sockets
@@ -393,7 +396,7 @@ void vsx_command_list_client::client_worker()
         count_sent++;
       }
     }
-    
+
     if (!count_sent) {
       if (keepalive_timer++ == 150) {
         vsx_string<>res = "_\n";
@@ -449,7 +452,7 @@ vsx_command_list* vsx_command_list_client::get_command_list_in()
 
 vsx_command_list* vsx_command_list_client::get_command_list_out()
 {
-  return &cmd_out;  
+  return &cmd_out;
 }
 
 bool vsx_command_list_client::client_connect(vsx_string<>&server_a)
@@ -465,3 +468,4 @@ int vsx_command_list_client::get_connection_status()
 }
 
 
+#endif
