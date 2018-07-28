@@ -35,7 +35,7 @@ class vsx_widget_dropbox
 public:
   size_t selected = 0;
 
-  std::function<void(size_t, vsx_string<>&)> on_selection = [](size_t value, vsx_string<>& title){};
+  std::function<void(size_t, const vsx_string<>&)> on_selection = [](size_t value, const vsx_string<>& title){};
   vsx_widget_dropbox(vsx_string<> title);
   void show_menu();
   void recalculate_sizes();
