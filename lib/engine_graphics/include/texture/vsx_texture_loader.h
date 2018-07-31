@@ -27,6 +27,8 @@ public:
   )
   {
     std::unique_ptr<vsx_texture<T>> texture( new vsx_texture<T>(true) );
+    if (bitmap_loader_hint & vsx_bitmap::loader_hint::cache_debug)
+      vsx_printf(L"DEBUG: texture loader filename: %hs\n", filename.c_str());
     texture->texture = handle_cache(filename, filesystem, thread, bitmap_loader_hint, gl_loader_hint, try_to_reload );
     if (texture->texture)
       return std::move(texture);

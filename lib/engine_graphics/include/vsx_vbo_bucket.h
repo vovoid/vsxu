@@ -469,13 +469,13 @@ private:
     if (!invalidation_flags) return;
 
     if (vertices.size() != vertex_colors.size() && vertex_colors.size())
-      vsx_printf(L"WARNING: vbo: vertex count differs from vertex color count\n");
+      vsx_printf(L"WARNING: vbo: vertex count differs from vertex color count: vertex count is %d and color count is %d\n", (int)vertices.size(), (int)vertex_colors.size());
 
     if (vertices.size() != vertex_normals.size() && vertex_normals.size())
-      vsx_printf(L"WARNING: vbo: vertex count differs from vertex normal count\n");
+      vsx_printf(L"WARNING: vbo: vertex count differs from vertex normal count: vertex count is %d and normal count is %d\n", (int)vertices.size(), (int)vertex_normals.size() );
 
     if (vertices.size() != vertex_tex_coords.size() && vertex_tex_coords.size())
-      vsx_printf(L"WARNING: vbo: vertex count differs from vertex tex coord count\n");
+      vsx_printf(L"WARNING: vbo: vertex count differs from vertex tex coord count: vertex count is %d and texcoord count is %d\n", (int)vertices.size(), (int)vertex_tex_coords.size() );
 
 
     if (check_if_need_to_reinit_vbo(current_vbo_draw_type))

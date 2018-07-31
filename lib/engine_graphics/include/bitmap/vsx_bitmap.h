@@ -106,7 +106,8 @@ public:
       flip_vertical_hint = 1,
       cubemap_split_6_1_hint = 2,
       cubemap_load_files_hint = 4,
-      cubemap_sphere_map = 8
+      cubemap_sphere_map = 8,
+      cache_debug = 16
     };
 
   uint64_t hint = 0;
