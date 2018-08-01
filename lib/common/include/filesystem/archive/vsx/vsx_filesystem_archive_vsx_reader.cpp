@@ -56,8 +56,9 @@ void filesystem_archive_vsx_reader::load_all()
 }
 
 
-bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load_data_multithreaded)
+bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load_data_multithreaded, uint64_t loading_flags)
 {
+  VSX_UNUSED(loading_flags);
   if (is_archive())
     close();
 

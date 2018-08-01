@@ -8,7 +8,7 @@
 namespace vsx
 {
 
-bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool load_data_multithreaded)
+bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool load_data_multithreaded, uint64_t loading_flags)
 {
   VSX_UNUSED(load_data_multithreaded);
   mmap = filesystem_mmap::create(archive_filename);
@@ -55,8 +55,11 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
   uncompressed_data_start_pointers[0] = compressed_data_start;
 
 #if PLATFORM == PLATFORM_WINDOWS
-  uncompressed_data_start_pointers[0] = (unsigned char*)malloc(chunk_info_table[0].uncompressed_size);
-  memcpy(uncompressed_data_start_pointers[0], compressed_data_start, chunk_info_table[0].uncompressed_size);
+  if ( !(loading_flags & VSX_FILESYSTEM_ARCHIVE_LOADING_FLAG_DO_NOT_COPY_MMAP_TO_RAM) )
+  {
+    uncompressed_data_start_pointers[0] = (unsigned char*)malloc(chunk_info_table[0].uncompressed_size);
+    memcpy(uncompressed_data_start_pointers[0], compressed_data_start, chunk_info_table[0].uncompressed_size);
+  }
 #endif
 
 

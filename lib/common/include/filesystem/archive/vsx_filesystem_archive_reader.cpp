@@ -11,7 +11,7 @@
 namespace vsx
 {
 
-bool filesystem_archive_reader::load(const char* archive_filename, bool load_data_multithreaded)
+bool filesystem_archive_reader::load(const char* archive_filename, bool load_data_multithreaded, uint64_t loading_flags)
 {
   if (archive)
     close();
@@ -32,7 +32,7 @@ bool filesystem_archive_reader::load(const char* archive_filename, bool load_dat
 
   req_error_v(archive, "unsupported file format", 1);
 
-  return archive->load(archive_filename, load_data_multithreaded);
+  return archive->load(archive_filename, load_data_multithreaded, loading_flags);
 }
 
 void filesystem_archive_reader::close()
