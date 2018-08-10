@@ -25,6 +25,13 @@ namespace filesystem_helper
     return (s.st_mode & S_IFDIR) != 0;
   }
 
+  inline bool is_file(vsx_string<> filename)
+  {
+    struct stat s;
+    stat(filename.c_str(), &s);
+    return (s.st_mode & S_IFREG) != 0;
+  }
+
   /**
     dev 2
     st mode 33206

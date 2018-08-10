@@ -21,8 +21,10 @@
 * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-#ifndef VSX_COMP_ABS_H
-#define VSX_COMP_ABS_H
+#pragma once
+
+#include <module/vsx_module_engine_state.h>
+#include <module/vsx_module_specification.h>
 
 class vsx_engine_param_list;
 
@@ -35,11 +37,11 @@ public:
 
   vsx_engine_param_list* in_parameters;
   vsx_engine_param_list* out_parameters;
-	// return a pointer to the paramlist
-	vsx_engine_param_list* get_params_in() { return in_parameters; }
-	vsx_engine_param_list* get_params_out() { return out_parameters; }
-	
-	void* engine_owner;
+  // return a pointer to the paramlist
+  vsx_engine_param_list* get_params_in() { return in_parameters; }
+  vsx_engine_param_list* get_params_out() { return out_parameters; }
+
+  void* engine_owner;
 
   vsx_comp_abs* parent;
 
@@ -47,16 +49,16 @@ public:
 
   // time warp
   float time_multiplier;
-  
+
   // timing - for performance debugging
-#ifdef VSXU_MODULE_TIMING  
+#ifdef VSXU_MODULE_TIMING
   double time_run;
   double time_output;
 
   double new_time_run;
   double new_time_output;
-#endif  
- 	vsx_module* module;
+#endif
+  vsx_module* module;
   vsx_module_specification* module_info;
   vsx_string<>identifier;
   vsx_string<>component_class;
@@ -65,6 +67,4 @@ public:
 
   virtual ~vsx_comp_abs() {}
 };
-
-#endif
 

@@ -27,6 +27,9 @@
 
 #include "vsx_comp_channel.h"
 #include "vsx_comp_abs.h"
+#include <command/vsx_command_list.h>
+#include <module/vsx_module.h>
+
 /*
 
 modulen fyller i en v�ldigt simpel lista utan logik i (klass)
