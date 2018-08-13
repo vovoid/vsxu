@@ -295,7 +295,7 @@ public:
 #if (PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX)
       mkdir( (profiler_directory).c_str(), 0700);
 #else
-      CreateDirectory( (profiler_directory).c_str(), nullptr );
+      CreateDirectoryA( (profiler_directory).c_str(), nullptr );
 #endif
 
 #if (PLATFORM_FAMILY == PLATFORM_FAMILY_UNIX)

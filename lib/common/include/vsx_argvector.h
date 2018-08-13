@@ -206,7 +206,7 @@ public:
     const size_t len = 512;
 
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-      int bytes = GetModuleFileName(NULL, pBuf, len);
+      int bytes = GetModuleFileNameA(NULL, pBuf, len);
       if(bytes == 0)
         return "";
       else

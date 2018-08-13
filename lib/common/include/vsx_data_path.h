@@ -37,9 +37,9 @@ public:
         if (access((data_path_get() + name).c_str(), 0) != 0)
         mkdir( (data_path_get() + name).c_str(), 0700 );
       #else
-        DWORD dwAttr = GetFileAttributes((data_path_get() + name).c_str());
-        if (dwAttr != 0xffffffff && (dwAttr & FILE_ATTRIBUTE_DIRECTORY))       
-          CreateDirectory( (data_path_get() + name).c_str(), NULL );
+        DWORD dwAttr = GetFileAttributesA((data_path_get() + name).c_str());
+        if (dwAttr != 0xffffffff && (dwAttr & FILE_ATTRIBUTE_DIRECTORY))
+          CreateDirectoryA( (data_path_get() + name).c_str(), NULL );
       #endif
   }
 

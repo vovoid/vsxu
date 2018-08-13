@@ -71,7 +71,7 @@ namespace filesystem_helper
             mkdir(dir_name,0700);
           #endif
           #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-            CreateDirectory(dir_name, NULL);
+            CreateDirectoryA(dir_name, NULL);
           #endif
         }
       }
@@ -82,7 +82,7 @@ namespace filesystem_helper
       mkdir(dir_name,0700);
     #endif
     #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
-      CreateDirectory(dir_name, NULL);
+      CreateDirectoryA(dir_name, NULL);
     #endif
   }
 
