@@ -263,7 +263,7 @@ class vsx_bitmap_loader_dds
     if (!thread)
       return (void)worker(bitmap, filesystem, filename);
 
-    vsx_thread_pool::instance()->add(
+    vsx_thread_pool<>::instance()->add(
       [=]
       (vsx_bitmap* bitmap, vsx::filesystem* filesystem, vsx_string<> filename)
       {

@@ -66,7 +66,7 @@ typedef int pid_t;
  * }
  **/
 
-#define VSXP_CLASS_DECLARE vsx_profiler* profiler;
+#define VSXP_CLASS_DECLARE vsx_profiler* profiler = 0x0;
 #define VSXP_CLASS_CONSTRUCTOR profiler = 0x0;
 #define VSXP_CLASS_LOCAL_INIT  do{ if (!profiler) profiler = vsx_profiler_manager::get_instance()->get_profiler(); } while(0);
 #define VSXP_M_BEGIN           profiler->maj_begin();

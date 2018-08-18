@@ -36,7 +36,7 @@ void filesystem_archive_vsx_reader::load_all()
     if (pooled_size <= work_chunk_size && !is_last)
       continue;
 
-    vsx_thread_pool::instance()->add(
+    vsx_thread_pool<>::instance()->add(
       [=](vsx_nw_vector<filesystem_archive_file_read*>* work_pool)
       {
         load_all_worker(work_pool);
@@ -51,7 +51,7 @@ void filesystem_archive_vsx_reader::load_all()
     pooled_size = 0;
   }
   vsx_printf(L"waiting for threads...\n");
-  vsx_thread_pool::instance()->wait_all(100);
+  vsx_thread_pool<>::instance()->wait_all(100);
   vsx_printf(L"done waiting\n");
 }
 

@@ -105,7 +105,7 @@ public:
 
     bitmap->data_ready = 0;
     bitmap->lock.aquire();
-    vsx_thread_pool::instance()->add(
+    vsx_thread_pool<>::instance()->add(
       [=]
       (vsx_bitmap* bitmap, float frequency, float attenuation, vsx_color<> color, bool alpha, uint16_t size)
       {

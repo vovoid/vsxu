@@ -71,7 +71,7 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
   for (size_t chunk_i = 1; chunk_i < header->chunk_count; chunk_i++)
   {
     uncompressed_data_start_pointers[chunk_i] = uncompressed_data_start + offset_uncompressed;
-    vsx_thread_pool::instance()->add(
+    vsx_thread_pool<>::instance()->add(
       []
       (
         const vsxz_header_chunk_info& chunk,
@@ -104,7 +104,7 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
     offset_compressed += chunk_info_table[chunk_i].compressed_size;
     offset_uncompressed += chunk_info_table[chunk_i].uncompressed_size;
   }
-  vsx_thread_pool::instance()->wait_all(100);
+  vsx_thread_pool<>::instance()->wait_all(100);
   return true;
 }
 

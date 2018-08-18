@@ -160,7 +160,7 @@ public:
 
   void on_delete()
   {
-    vsx_thread_pool::instance()->wait_all(10);
+    vsx_thread_pool<>::instance()->wait_all(10);
 
     if (texture_old)
     {

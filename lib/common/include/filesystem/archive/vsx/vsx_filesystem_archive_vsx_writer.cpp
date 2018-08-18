@@ -63,7 +63,7 @@ void filesystem_archive_vsx_writer::file_add_all()
     if (pooled_size <= work_chunk_size && !is_last)
       continue;
 
-    vsx_thread_pool::instance()->add(
+    vsx_thread_pool<>::instance()->add(
       [=](vsx_nw_vector<filesystem_archive_file_write*>* work_pool)
       {
         file_add_all_worker(work_pool);
@@ -79,7 +79,7 @@ void filesystem_archive_vsx_writer::file_add_all()
   }
 
   if (pool)
-    vsx_thread_pool::instance()->add(
+    vsx_thread_pool<>::instance()->add(
       [=](vsx_nw_vector<filesystem_archive_file_write*>* work_pool)
       {
         file_add_all_worker(work_pool);
@@ -88,7 +88,7 @@ void filesystem_archive_vsx_writer::file_add_all()
       pool
     );
 
-  vsx_thread_pool::instance()->wait_all(100);
+  vsx_thread_pool<>::instance()->wait_all(100);
 
   req(files_to_process);
 

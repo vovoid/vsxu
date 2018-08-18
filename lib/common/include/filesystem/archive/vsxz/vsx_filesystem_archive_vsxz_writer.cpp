@@ -106,7 +106,7 @@ void filesystem_archive_vsxz_writer::calculate_ratios()
     }
 
     req_continue(do_compress);
-    vsx_thread_pool::instance()->add( [&](float& ratio, size_t ai)
+    vsx_thread_pool<>::instance()->add( [&](float& ratio, size_t ai)
       {
         vsx_printf(L"calculating ratio for %hs\n", archive_files[ai].filename.c_str());
         vsx_ma_vector<unsigned char> lzma_compressed = vsx::compression_lzma::compress( archive_files[ai].data );
@@ -125,7 +125,7 @@ void filesystem_archive_vsxz_writer::calculate_ratios()
   }
 
   // wait until thread pool done
-  vsx_thread_pool::instance()->wait_all(100);
+  vsx_thread_pool<>::instance()->wait_all(100);
 }
 
 void filesystem_archive_vsxz_writer::add_files_to_chunk_space_evenly()

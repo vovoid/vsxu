@@ -15,9 +15,9 @@
 #include <string/vsx_printf.h>
 #include <debug/vsx_backtrace.h>
 
+template<int Td = 1>
 class vsx_thread_pool
 {
-
 public:
 
   enum priority {
@@ -34,11 +34,25 @@ public:
   {
     tasks_queued = 0;
 
-    if (threads > 4)
-      threads -= 2;
+    if (Td == 0)
+    {
+      if (threads > 4)
+        threads -= 1;
 
-    if (threads == 4)
-      threads -= 1;
+      if (threads == 4)
+        threads -= 1;
+    }
+
+    if (Td == 1)
+    {
+      if (threads > 4)
+        threads -= 2 * Td;
+
+      if (threads == 4)
+        threads -= 1 * Td;
+    }
+
+    vsx_printf(L"INFO: initializing thread pool with %d threads\n", (int)threads)
 
     for_n (i, 0, threads)
       workers.emplace_back(
@@ -82,7 +96,7 @@ public:
 
   // Add tasks to the task queue
   template<class F, class... Args>
-  inline auto add(vsx_thread_pool::priority p, F&& f, Args&&... args)
+  inline auto add(priority p, F&& f, Args&&... args)
     -> std::future<typename std::result_of<F(Args...)>::type>
   {
     tasks_queued++;
@@ -135,7 +149,7 @@ public:
     return true;
   }
 
-  static vsx_thread_pool* instance()
+  static vsx_thread_pool<1>* instance()
   {
     static vsx_thread_pool p;
     return &p;
@@ -163,6 +177,6 @@ private:
 };
 
 
-#define threaded_task vsx_thread_pool::instance()->add( [&]()
+#define threaded_task vsx_thread_pool<>::instance()->add( [&]()
 #define threaded_task_end );
-#define threaded_task_wait_all(ms) vsx_thread_pool::instance()->wait_all(ms)
+#define threaded_task_wait_all(ms) vsx_thread_pool<>::instance()->wait_all(ms)
