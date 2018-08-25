@@ -84,7 +84,10 @@ public:
       VSX_ERROR_RETURN("texture_gl invalid");
 
     if (texture->attached_to_cache)
-      VSX_ERROR_RETURN("Trying to unload a texture which is not local");
+    {
+        vsx_texture_gl_cache::get_instance()->destroy( texture );
+        return;
+    }
 
     texture->unload();
   }
@@ -158,13 +161,7 @@ public:
   ~vsx_texture()
   {
     if (texture && !texture->attached_to_cache)
-    {
       delete texture;
-      return;
-    }
-
-//    if (texture && texture->attached_to_cache)
-//      vsx_texture_gl_cache::get_instance()->destroy( texture );
   }
 };
 

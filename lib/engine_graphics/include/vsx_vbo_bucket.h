@@ -130,7 +130,7 @@ public:
     disable_client_arrays();
   }
 
-  void unload()
+  void unload_gl()
   {
     destroy_vbo();
   }

@@ -201,7 +201,10 @@ public:
     vsx_thread_pool<>::instance()->wait_all(10);
 
     if (texture)
+    {
+      texture->unload_gl();
       texture.reset(nullptr);
+    }
   }
 
 };
