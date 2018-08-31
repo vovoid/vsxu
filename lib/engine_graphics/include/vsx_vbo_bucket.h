@@ -33,6 +33,8 @@
 
 */
 
+void vbo_bucket_debug(size_t num);
+
 template
 <
   // Face storage type. Must match sizeof in A
@@ -445,10 +447,13 @@ private:
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
   }
 
-  inline void perform_draw( size_t num = 0 )
+  void perform_draw( size_t num = 0 )
   {
     if (num == 0)
       num = faces.get_used() * Tf::arity();
+
+    vbo_bucket_debug(num);
+
     glDrawElements
     (
       T_type,
