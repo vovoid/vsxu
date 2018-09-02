@@ -50,3 +50,14 @@ bool vsx_gl_vendor::is_amd()
   return amd;
 }
 
+bool vsx_gl_vendor::is_intel()
+{
+  if (!init_run)
+  {
+    vsx_printf(L"ERROR: FATAL: init has not been run!\n");
+    exit(1);
+  }
+  return intel;
+
+}
+

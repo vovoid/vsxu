@@ -19,5 +19,6 @@ public:
   void init();
   vsx_string<> get_vendor_prefix();
   bool is_amd();
+  bool is_intel();
 
 };
