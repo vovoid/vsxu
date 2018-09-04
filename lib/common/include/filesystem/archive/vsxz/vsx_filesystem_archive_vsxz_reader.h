@@ -26,6 +26,7 @@ class filesystem_archive_vsxz_reader
   vsx_filesystem_tree_reader tree;
   unsigned char* uncompressed_data_start_pointers[9] = {0,0,0,0,0,0,0,0,0};
   vsxz_header_file_info* file_info_table = 0x0;
+  uint64_t loading_flags;
 
 public:
 

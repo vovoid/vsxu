@@ -21,6 +21,8 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
   reqrv(header->identifier[2] == 'X', false);
   reqrv(header->identifier[3] == 'Z', false);
 
+  this->loading_flags = loading_flags;
+
   if (header->compression_uncompressed_memory_size)
     uncompressed_data.allocate(header->compression_uncompressed_memory_size - 1);
 
@@ -132,8 +134,9 @@ void filesystem_archive_vsxz_reader::close()
   filesystem_mmap::destroy(mmap);
 
 #if PLATFORM == PLATFORM_WINDOWS
-  if (uncompressed_data_start_pointers[0])
-    free(uncompressed_data_start_pointers[0]);
+  if ( !(loading_flags & VSX_FILESYSTEM_ARCHIVE_LOADING_FLAG_DO_NOT_COPY_MMAP_TO_RAM) )
+    if (uncompressed_data_start_pointers[0])
+      free(uncompressed_data_start_pointers[0]);
 #endif
 
   header = 0x0;
