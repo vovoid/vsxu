@@ -9,6 +9,7 @@ void vsx_gl_vendor::init()
   str = (char*)glGetString(GL_VENDOR);
   vsx_string<> vendor_str(str);
   vendor_str.make_lowercase();
+  init_run = true;
   if (vendor_str.find("ati") >= 0)
   {
     amd = true;
