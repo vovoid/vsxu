@@ -36,6 +36,7 @@
 #include <math/vector/vsx_vector2.h>
 #include <math/vector/vsx_vector2_helper.h>
 #include <vsx_common_dllimport.h>
+#include <math/vsx_bezier_calc.h>
 
 namespace vsx
 {
