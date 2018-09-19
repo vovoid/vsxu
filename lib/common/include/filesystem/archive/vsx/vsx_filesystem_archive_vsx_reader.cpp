@@ -122,6 +122,21 @@ bool filesystem_archive_vsx_reader::load(const char* archive_filename, bool load
   return true;
 }
 
+bool filesystem_archive_vsx_reader::load(const char* archive_filename, vsx_thread_pool<-1>& pool, uint64_t loading_flags)
+{
+  return false;
+}
+
+bool filesystem_archive_vsx_reader::load(const char* archive_filename, vsx_thread_pool<0>& pool, uint64_t loading_flags)
+{
+  return false;
+}
+
+bool filesystem_archive_vsx_reader::load(const char* archive_filename, vsx_thread_pool<1>& pool, uint64_t loading_flags)
+{
+  return false;
+}
+
 
 void filesystem_archive_vsx_reader::files_get(vsx_nw_vector<filesystem_archive_file_read>& files)
 {

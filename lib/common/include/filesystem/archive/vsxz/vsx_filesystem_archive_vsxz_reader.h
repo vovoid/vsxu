@@ -28,9 +28,18 @@ class filesystem_archive_vsxz_reader
   vsxz_header_file_info* file_info_table = 0x0;
   uint64_t loading_flags;
 
+  // loading
+  unsigned char* uncompressed_data_start = 0x0;
+  unsigned char* compressed_data_start = 0x0;
+  vsxz_header_chunk_info* chunk_info_table = 0x0;
+  bool load_initial(const char* archive_filename, uint64_t loading_flags);
+
 public:
 
   bool load(const char* archive_filename, bool load_data_multithreaded, uint64_t loading_flags);
+  bool load(const char* archive_filename, vsx_thread_pool<-1>& pool, uint64_t loading_flags);
+  bool load(const char* archive_filename, vsx_thread_pool<0>& pool, uint64_t loading_flags);
+  bool load(const char* archive_filename, vsx_thread_pool<1>& pool, uint64_t loading_flags);
 
   void files_get(vsx_nw_vector<filesystem_archive_file_read>& files);
   void file_open(const char* filename, file* &handle);

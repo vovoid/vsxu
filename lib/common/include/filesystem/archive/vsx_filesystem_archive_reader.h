@@ -4,6 +4,7 @@
 #include <container/vsx_nw_vector.h>
 #include <string/vsx_string.h>
 #include <tools/vsx_lock.h>
+#include <tools/vsx_thread_pool.h>
 
 #include <filesystem/vsx_file.h>
 #include <filesystem/archive/vsx_filesystem_archive_reader_base.h>
@@ -27,9 +28,16 @@ namespace vsx
     filesystem_archive_reader_base* archive = 0x0;
     archive_type_t archive_type = archive_none;
 
+    void load_create_archive(const char* archive_filename);
+
   public:
 
     bool load(const char* archive_filename, bool load_data_multithreaded, uint64_t loading_flags);
+
+    bool load(const char* archive_filename, vsx_thread_pool<-1>& pool, uint64_t loading_flags);
+    bool load(const char* archive_filename, vsx_thread_pool<0>& pool, uint64_t loading_flags);
+    bool load(const char* archive_filename, vsx_thread_pool<1>& pool, uint64_t loading_flags);
+
     void file_open(const char* filename, file* &handle);
     void close();
 

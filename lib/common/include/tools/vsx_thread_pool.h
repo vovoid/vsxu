@@ -15,6 +15,10 @@
 #include <string/vsx_printf.h>
 #include <debug/vsx_backtrace.h>
 
+#if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+#include <windows.h>
+#endif
+
 template<int Td = 1>
 class vsx_thread_pool
 {
@@ -147,6 +151,14 @@ public:
       std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 
     return true;
+  }
+
+  inline void set_operating_system_priority_lower()
+  {
+    #if PLATFORM_FAMILY == PLATFORM_FAMILY_WINDOWS
+      foreach(workers, i)
+        SetThreadPriority(workers[i].native_handle(), -1);
+    #endif
   }
 
   static vsx_thread_pool<1>* instance()

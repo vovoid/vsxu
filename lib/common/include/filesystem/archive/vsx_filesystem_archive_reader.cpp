@@ -11,7 +11,7 @@
 namespace vsx
 {
 
-bool filesystem_archive_reader::load(const char* archive_filename, bool load_data_multithreaded, uint64_t loading_flags)
+void filesystem_archive_reader::load_create_archive(const char* archive_filename)
 {
   if (archive)
     close();
@@ -29,11 +29,36 @@ bool filesystem_archive_reader::load(const char* archive_filename, bool load_dat
 
   if (archive_type == archive_vsxz)
     archive = new filesystem_archive_vsxz_reader();
+}
 
+bool filesystem_archive_reader::load(const char* archive_filename, bool load_data_multithreaded, uint64_t loading_flags)
+{
+  load_create_archive(archive_filename);
   req_error_v(archive, "unsupported file format", 1);
-
   return archive->load(archive_filename, load_data_multithreaded, loading_flags);
 }
+
+bool filesystem_archive_reader::load(const char* archive_filename, vsx_thread_pool<-1>& pool, uint64_t loading_flags)
+{
+  load_create_archive(archive_filename);
+  req_error_v(archive, "unsupported file format", 1);
+  return archive->load(archive_filename, pool, loading_flags);
+}
+
+bool filesystem_archive_reader::load(const char* archive_filename, vsx_thread_pool<0>& pool, uint64_t loading_flags)
+{
+  load_create_archive(archive_filename);
+  req_error_v(archive, "unsupported file format", 1);
+  return archive->load(archive_filename, pool, loading_flags);
+}
+
+bool filesystem_archive_reader::load(const char* archive_filename, vsx_thread_pool<1>& pool, uint64_t loading_flags)
+{
+  load_create_archive(archive_filename);
+  req_error_v(archive, "unsupported file format", 1);
+  return archive->load(archive_filename, pool, loading_flags);
+}
+
 
 void filesystem_archive_reader::close()
 {

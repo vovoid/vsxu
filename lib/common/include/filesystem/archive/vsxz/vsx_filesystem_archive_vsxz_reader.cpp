@@ -8,9 +8,8 @@
 namespace vsx
 {
 
-bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool load_data_multithreaded, uint64_t loading_flags)
+bool filesystem_archive_vsxz_reader::load_initial(const char* archive_filename, uint64_t loading_flags)
 {
-  VSX_UNUSED(load_data_multithreaded);
   mmap = filesystem_mmap::create(archive_filename);
   reqrv(mmap, false);
   reqrv(mmap->size > sizeof(vsxz_header) + sizeof(vsxz_header_file_info), false);
@@ -26,7 +25,7 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
   if (header->compression_uncompressed_memory_size)
     uncompressed_data.allocate(header->compression_uncompressed_memory_size - 1);
 
-  vsxz_header_chunk_info* chunk_info_table =
+  chunk_info_table =
       (vsxz_header_chunk_info*) (
         mmap->data +
         sizeof(vsxz_header) +
@@ -42,11 +41,9 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
 
   tree.initialize( mmap->data + sizeof(vsxz_header) );
 
+  uncompressed_data_start = uncompressed_data.get_pointer();
 
-
-  unsigned char* uncompressed_data_start = uncompressed_data.get_pointer();
-
-  unsigned char* compressed_data_start =
+  compressed_data_start =
       mmap->data +
       sizeof(vsxz_header) +
       header->tree_size +
@@ -64,9 +61,15 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
   }
 #endif
 
-
   // first chunk is always uncompressed
   compressed_data_start += chunk_info_table[0].uncompressed_size;
+  return true;
+}
+
+bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool load_data_multithreaded, uint64_t loading_flags)
+{
+  VSX_UNUSED(load_data_multithreaded);
+  reqrf(load_initial(archive_filename, loading_flags));
 
   uint32_t offset_uncompressed = 0;
   uint32_t offset_compressed = 0;
@@ -107,6 +110,144 @@ bool filesystem_archive_vsxz_reader::load(const char* archive_filename, bool loa
     offset_uncompressed += chunk_info_table[chunk_i].uncompressed_size;
   }
   vsx_thread_pool<>::instance()->wait_all(100);
+  return true;
+}
+
+bool filesystem_archive_vsxz_reader::load(const char* archive_filename, vsx_thread_pool<-1>& pool, uint64_t loading_flags)
+{
+  reqrf(load_initial(archive_filename, loading_flags));
+
+  uint32_t offset_uncompressed = 0;
+  uint32_t offset_compressed = 0;
+  for (size_t chunk_i = 1; chunk_i < header->chunk_count; chunk_i++)
+  {
+    uncompressed_data_start_pointers[chunk_i] = uncompressed_data_start + offset_uncompressed;
+    pool.add(
+      []
+      (
+        const vsxz_header_chunk_info& chunk,
+        unsigned char* compressed_data,
+        unsigned char* uncompressed_data
+      )
+      {
+        req(chunk.compressed_size);
+        req(chunk.compression_type);
+
+        vsx_ma_vector<unsigned char> compressed;
+        compressed.set_volatile();
+        compressed.set_data( compressed_data, chunk.compressed_size );
+
+        vsx_ma_vector<unsigned char> uncompressed;
+        uncompressed.set_volatile();
+        uncompressed.set_data( uncompressed_data, chunk.uncompressed_size );
+
+        if (chunk.compression_type == 1)
+          compression_lzma::uncompress(uncompressed, compressed);
+
+        if (chunk.compression_type == 2)
+          compression_lzham::uncompress(uncompressed, compressed);
+      },
+      chunk_info_table[chunk_i],
+      compressed_data_start + offset_compressed,
+      uncompressed_data_start + offset_uncompressed
+    );
+
+    offset_compressed += chunk_info_table[chunk_i].compressed_size;
+    offset_uncompressed += chunk_info_table[chunk_i].uncompressed_size;
+  }
+  pool.wait_all(100);
+  return true;
+}
+
+bool filesystem_archive_vsxz_reader::load(const char* archive_filename, vsx_thread_pool<0>& pool, uint64_t loading_flags)
+{
+  reqrf(load_initial(archive_filename, loading_flags));
+
+  uint32_t offset_uncompressed = 0;
+  uint32_t offset_compressed = 0;
+  for (size_t chunk_i = 1; chunk_i < header->chunk_count; chunk_i++)
+  {
+    uncompressed_data_start_pointers[chunk_i] = uncompressed_data_start + offset_uncompressed;
+    pool.add(
+      []
+      (
+        const vsxz_header_chunk_info& chunk,
+        unsigned char* compressed_data,
+        unsigned char* uncompressed_data
+      )
+      {
+        req(chunk.compressed_size);
+        req(chunk.compression_type);
+
+        vsx_ma_vector<unsigned char> compressed;
+        compressed.set_volatile();
+        compressed.set_data( compressed_data, chunk.compressed_size );
+
+        vsx_ma_vector<unsigned char> uncompressed;
+        uncompressed.set_volatile();
+        uncompressed.set_data( uncompressed_data, chunk.uncompressed_size );
+
+        if (chunk.compression_type == 1)
+          compression_lzma::uncompress(uncompressed, compressed);
+
+        if (chunk.compression_type == 2)
+          compression_lzham::uncompress(uncompressed, compressed);
+      },
+      chunk_info_table[chunk_i],
+      compressed_data_start + offset_compressed,
+      uncompressed_data_start + offset_uncompressed
+    );
+
+    offset_compressed += chunk_info_table[chunk_i].compressed_size;
+    offset_uncompressed += chunk_info_table[chunk_i].uncompressed_size;
+  }
+  pool.wait_all(100);
+  return true;
+}
+
+bool filesystem_archive_vsxz_reader::load(const char* archive_filename, vsx_thread_pool<1>& pool, uint64_t loading_flags)
+{
+  reqrf(load_initial(archive_filename, loading_flags));
+
+  uint32_t offset_uncompressed = 0;
+  uint32_t offset_compressed = 0;
+  for (size_t chunk_i = 1; chunk_i < header->chunk_count; chunk_i++)
+  {
+    uncompressed_data_start_pointers[chunk_i] = uncompressed_data_start + offset_uncompressed;
+    pool.add(
+      []
+      (
+        const vsxz_header_chunk_info& chunk,
+        unsigned char* compressed_data,
+        unsigned char* uncompressed_data
+      )
+      {
+        req(chunk.compressed_size);
+        req(chunk.compression_type);
+
+        vsx_ma_vector<unsigned char> compressed;
+        compressed.set_volatile();
+        compressed.set_data( compressed_data, chunk.compressed_size );
+
+        vsx_ma_vector<unsigned char> uncompressed;
+        uncompressed.set_volatile();
+        uncompressed.set_data( uncompressed_data, chunk.uncompressed_size );
+
+        if (chunk.compression_type == 1)
+          compression_lzma::uncompress(uncompressed, compressed);
+
+        if (chunk.compression_type == 2)
+          compression_lzham::uncompress(uncompressed, compressed);
+      },
+      chunk_info_table[chunk_i],
+      compressed_data_start + offset_compressed,
+      uncompressed_data_start + offset_uncompressed
+    );
+
+    offset_compressed += chunk_info_table[chunk_i].compressed_size;
+    offset_uncompressed += chunk_info_table[chunk_i].uncompressed_size;
+  }
+  pool.wait_all(100);
   return true;
 }
 
