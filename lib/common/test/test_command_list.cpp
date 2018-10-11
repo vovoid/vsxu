@@ -21,7 +21,7 @@ void test_legacy()
   forever
   {
     req_break(command = command_list.get());
-    vsx_printf(L"command: %s\n", command->raw.c_str());
+    vsx_printf(L"command: %hs\n", command->raw.c_str());
   }
   my_filesystem.get_archive()->close();
 }

@@ -33,7 +33,7 @@ void extract()
   if ( vsx_argvector::get_instance()->has_param("m") )
     perf_cpu_instructions.cpu_instructions_begin();
 
-  filesystem.get_archive()->load( filename.c_str(), vsx_argvector::get_instance()->has_param("mt"), 0);
+  filesystem.get_archive()->load( filename.c_str(), vsx_argvector::get_instance()->has_param("mt"), 0 );
 
   // Sanitize archive
   if (!filesystem.get_archive()->is_archive_populated())
