@@ -43,4 +43,3 @@ int main(int argc, char *argv[])
   test_complete
   return 0;
 }
-
