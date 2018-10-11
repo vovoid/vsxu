@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <tools/vsx_req.h>
+#include <inttypes.h>
 
 size_t f_get_size(FILE* handle)
 {
@@ -19,8 +20,8 @@ int main(int argc,char* argv[])
   FILE* op = fopen(argv[2], "wb");
 
   size_t header_size = 0x2c;
-  u_int32_t data_size = f_get_size(ip);
-  u_int32_t write_size = header_size + data_size - 8;
+  uint32_t data_size = f_get_size(ip);
+  uint32_t write_size = header_size + data_size - 8;
 
   char* source_data = (char*)malloc(data_size);
   size_t bytes_read = fread(source_data, 1, data_size, ip);
@@ -36,7 +37,7 @@ int main(int argc,char* argv[])
   writechar('I');
   writechar('F');
   writechar('F');
-  fwrite(&write_size,sizeof(u_int32_t), 1, op);
+  fwrite(&write_size,sizeof(uint32_t), 1, op);
   writechar('W');
   writechar('A');
   writechar('V');
@@ -69,7 +70,7 @@ int main(int argc,char* argv[])
   writechar('a');
   writechar('t');
   writechar('a');
-  fwrite(&data_size, sizeof(u_int32_t), 1, op);
+  fwrite(&data_size, sizeof(uint32_t), 1, op);
 
   fwrite(source_data, 1, data_size, op);
 
