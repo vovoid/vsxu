@@ -40,7 +40,7 @@ void test_plain_files()
 
   filesystem_archive_vsx_reader archive_load;
 
-  archive_load.load("test_filesystem_archive.vsx", false);
+  archive_load.load("test_filesystem_archive.vsx", false, 0);
 
   test_assert(archive_load.is_file("test_filesystem_archive_file_1"));
   test_assert(archive_load.is_file("test_filesystem_archive_file_2"));
@@ -57,7 +57,7 @@ void test_text_files()
 
   filesystem_archive_vsx_reader archive_load;
 
-  archive_load.load("test_filesystem_archive.vsx", false);
+  archive_load.load("test_filesystem_archive.vsx", false, 0);
 
   vsx_nw_vector<filesystem_archive_file_read> files;
   archive_load.files_get(files);
@@ -84,7 +84,7 @@ void test_singleton_archive_prohibited()
 void test_filesystem_archive_reader()
 {
   filesystem my_filesystem;
-  my_filesystem.get_archive()->load("test_filesystem_archive.vsx", true);
+  my_filesystem.get_archive()->load("test_filesystem_archive.vsx", true, 0);
   file* my_file =  my_filesystem.f_open("test_filesystem_archive_file_1");
   test_assert(my_file);
   char* entire_file = my_filesystem.f_gets_entire(my_file);

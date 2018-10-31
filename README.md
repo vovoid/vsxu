@@ -28,11 +28,11 @@ Compilation Instructions for a basic version of VSXu Ubuntu/Debian:
 
 Make sure you have met the build dependencies:
 
-      sudo apt-get install libglew-dev libpng12-dev libjpeg-dev libpulse-dev libopenexr-dev libxrandr-dev make cmake g++ gcc git-core
+      sudo apt-get install libglew-dev libpng-dev libjpeg-dev libpulse-dev libopenexr-dev libxrandr-dev libfreetype6-dev libsdl2-dev libegl1-mesa-dev libgles2-mesa-dev build-essential cmake
 
 Optional dependencies:
 
-      sudo apt-get install libopencv-dev libcvaux-dev libhighgui-dev libcv-dev
+      sudo apt-get install libopencv-dev
 
 Get the VSXu Source from github via ssh:
 

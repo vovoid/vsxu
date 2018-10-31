@@ -65,7 +65,7 @@ void vsx_widget_label::draw_debug(vsx_vector3f position)
 
 void vsx_widget_label::i_draw()
 {
-  req(visible);
+  req(visible > 0.0f);
 
   vsx_vector3<> position = parent->get_pos_p() + pos;
 
