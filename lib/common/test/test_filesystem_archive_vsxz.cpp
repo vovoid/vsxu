@@ -40,7 +40,7 @@ void test_plain_files()
 
   filesystem_archive_vsxz_reader archive_load;
 
-  archive_load.load("test_filesystem_archive.vsxz", false);
+  archive_load.load("test_filesystem_archive.vsxz", false, 0);
 
   test_assert(archive_load.is_file("test_filesystem_archive_file_1"));
   test_assert(archive_load.is_file("test_filesystem_archive_file_2"));
@@ -58,7 +58,7 @@ void test_text_files()
 
   filesystem_archive_vsxz_reader archive_load;
 
-  archive_load.load("test_filesystem_archive.vsxz", false);
+  archive_load.load("test_filesystem_archive.vsxz", false, 0);
 
   file* handle = new file;
   archive_load.file_open("test_string", handle);
@@ -77,7 +77,7 @@ void test_text_files()
 void test_filesystem_archive_reader()
 {
   filesystem my_filesystem;
-  my_filesystem.get_archive()->load("test_filesystem_archive.vsxz", true);
+  my_filesystem.get_archive()->load("test_filesystem_archive.vsxz", true, 0);
   file* my_file =  my_filesystem.f_open("test_filesystem_archive_file_1");
   test_assert(my_file);
   char* entire_file = my_filesystem.f_gets_entire(my_file);

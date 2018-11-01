@@ -22,7 +22,7 @@ public:
   pack(vsx_string<> filename)
   {
     fs = new vsx::filesystem();
-    fs->get_archive()->load( filename.c_str(), true );
+    fs->get_archive()->load( filename.c_str(), true, 0);
     vsx::json json = vsx::json_helper::load_json_from_file("manifest.json", fs);
     vsx_string<> name = json["name"].string_value().c_str();
 

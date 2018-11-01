@@ -13,7 +13,7 @@ using namespace vsx;
 void test_legacy()
 {
   filesystem my_filesystem;
-  my_filesystem.get_archive()->load("/tmp/dolphin.vsx", true);
+  my_filesystem.get_archive()->load("/tmp/dolphin.vsx", true, 0);
   vsx_command_list command_list(true);
   command_list.set_filesystem(&my_filesystem);
   command_list.load_from_file("_states/_default", true);
