@@ -60,7 +60,8 @@ public:
   {
     vsx_application::print_help();
     vsx_printf(
-      L"    -pl                       Preload all visuals on start \n"
+      L"    -no                       Disable the overlay and don't show anything but the visuals in the player \n"
+       "    -pl                       Preload all visuals on start \n"
        "    -dp                       Disable automatic progression     \n"
        "    -rs                       Sequential visual progression\n"
     );
