@@ -3,6 +3,9 @@
 HERE="$(dirname "$(readlink -f "${0}")")"
 export LD_LIBRARY_PATH=$(readlink -f "$HERE/usr/lib"):$LD_LIBRARY_PATH
 
+# Thanks to waylan at github for providing this gist:
+# https://gist.github.com/waylan/4080362
+
 ProgName="VSXu*.appimage"
 
 sub_help(){
