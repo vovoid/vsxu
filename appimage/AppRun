@@ -3,4 +3,78 @@
 HERE="$(dirname "$(readlink -f "${0}")")"
 export LD_LIBRARY_PATH=$(readlink -f "$HERE/usr/lib"):$LD_LIBRARY_PATH
 
-$HERE/usr/bin/vsxu_launcher
+ProgName="VSXu*.appimage"
+
+sub_help(){
+    echo "Usage: $ProgName <subcommand> [options]\n"
+    echo "Subcommands:"
+    echo ""
+    echo "  Applications:"
+    echo "    launcher   Do bar"
+    echo "    artiste   Run baz"
+    echo "    player   Do bar"
+    echo "    profiler   Run baz"
+    echo "    server   Do bar"
+    echo ""
+    echo "  Tools:"
+    echo "    obj2vxm   Do bar"
+    echo "    vsxbt   Run baz"
+    echo "    vsxl   Do bar"
+    echo "    vsxz   Run baz"
+    echo ""
+    echo "For help with each subcommand run:"
+    echo "$ProgName <subcommand> -h|--help"
+    echo ""
+}
+
+
+sub_artiste(){
+    $HERE/usr/bin/vsxu_artiste "$@"
+}
+sub_launcher(){
+    $HERE/usr/bin/vsxu_launcher "$@"
+}
+sub_player(){
+    $HERE/usr/bin/vsxu_player "$@"
+}
+sub_profiler(){
+    $HERE/usr/bin/vsxu_profiler "$@"
+}
+sub_server(){
+    $HERE/usr/bin/vsxu_server "$@"
+}
+
+
+sub_obj2vxm(){
+    $HERE/usr/bin/obj2vxm "$@"
+}
+sub_vsxbt(){
+    $HERE/usr/bin/vsxbt "$@"
+}
+sub_vsxl(){
+    $HERE/usr/bin/vsxl "$@"
+}
+sub_vsxz(){
+    $HERE/usr/bin/vsxz "$@"
+}
+
+subcommand=$1
+case $subcommand in
+    "-h" | "--help")
+        sub_help # Displays help message
+        ;;
+    "")
+        sub_launcher # Starts the launcher in case there are no subcommands
+	;;
+    *)
+        shift
+        sub_${subcommand} "$@" 2> /dev/null
+        if [ $? = 127 ]; then
+	    sub_launcher "$@" # Starts the launcher in case the subcommand is not known
+            # echo "Error: '$subcommand' is not a known subcommand." >&2
+            # echo "       Run '$ProgName --help' for a list of known subcommands." >&2
+            # exit 1
+        fi
+        ;;
+esac
+
