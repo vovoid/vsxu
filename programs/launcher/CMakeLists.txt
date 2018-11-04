@@ -58,6 +58,13 @@ set(SOURCES
   src/launcher_main.cpp
 )
 
+# Solve the problem with DPI scaling
+# since we want our own rc file
+if(WIN32)
+    set(CMAKE_EXE_LINKER_FLAGS "/MANIFEST:NO")
+    set(SOURCES ${SOURCES} launcher.rc)
+endif()
+
 file(GLOB_RECURSE HEADER_FILES *.h)
 
 

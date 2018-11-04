@@ -65,9 +65,9 @@ void dialog_query_string::set_value(vsx_string<> value)
 
 void dialog_query_string::show(vsx_string<> value)
 {
-  ((vsx_widget_base_edit*)edit1)->set_string(value);
   ((vsx_widget_base_edit*)edit1)->caret_goto_end();
   show();
+  ((vsx_widget_base_edit*)edit1)->set_string(value);
 }
 
 void dialog_query_string::show()

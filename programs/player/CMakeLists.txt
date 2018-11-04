@@ -56,6 +56,14 @@ set(SOURCES
   src/main.cpp
 )
 
+# Solve the problem with DPI scaling
+# since we want our own rc file
+if(WIN32)
+    set(CMAKE_EXE_LINKER_FLAGS "/MANIFEST:NO")
+    set(SOURCES ${SOURCES} player.rc)
+endif()
+
+
 ################################################################################
 # LINK #########################################################################
 ################################################################################
