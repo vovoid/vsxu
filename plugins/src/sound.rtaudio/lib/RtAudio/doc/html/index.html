@@ -28,25 +28,17 @@
 </ul>
 <p><a class="el" href="classRtAudio.html" title="Realtime audio i/o C++ classes.">RtAudio</a> incorporates the concept of audio streams, which represent audio output (playback) and/or input (recording). Available audio devices and their capabilities can be enumerated and then specified when opening a stream. Where applicable, multiple API support can be compiled and a particular API specified when creating an <a class="el" href="classRtAudio.html" title="Realtime audio i/o C++ classes.">RtAudio</a> instance. See the <a class="el" href="apinotes.html">API Notes</a> section for information specific to each of the supported audio APIs.</p>
 <h1><a class="anchor" id="whatsnew"></a>
-Latest Updates (Version 4.1.2)</h1>
-<p>Changes in this release include:</p>
+Latest Updates (Version 5.0.0)</h1>
+<p>The version number has been bumped to 5.0.0 because of the past API change concerning the renaming of the RtError class to <a class="el" href="classRtAudioError.html" title="Exception handling class for RtAudio.">RtAudioError</a>. Changes in this release include:</p>
 <ul>
-<li>miscellaneous small fixes for the various systems (more details in <a href="http://github.com/thestk/rtaudio">GitHub</a>)</li>
-</ul>
-<p>Changes in the 4.1.0 release included:</p>
-<ul>
-<li>RtError class renamed <a class="el" href="classRtAudioError.html" title="Exception handling class for RtAudio.">RtAudioError</a> and embedded in <a class="el" href="RtAudio_8h.html">RtAudio.h</a> (RtError.h deleted)</li>
-<li>new support for the Windows WASAPI API (thanks to Marcus Tomlinson)</li>
-<li>CMake support (thanks to Berkus Decker)</li>
-<li>pulse audio update to support bufferFrames argument with audio input (thanks to Jonatan Wallmander)</li>
-<li>fixes for ALSA API to avoid high CPU usage during stops and to clear stale data before input (thanks to Pluto Hades)</li>
-<li>miscellaneous efficiency updates suggested by Martin Koegler</li>
-<li>bug fix for OS-X xrun reporting problem</li>
-<li>bug fix if error when opening a stream after closing a previously open stream</li>
+<li>WASAPI updates (thanks to Marcus Tomlinson)</li>
+<li>minor exception semantic changes</li>
+<li>miscellaneous build system updates</li>
+<li>see git history for complete list of changes</li>
 </ul>
 <h1><a class="anchor" id="download"></a>
 Download</h1>
-<p>Latest Release (22 February 2016): <a href="http://www.music.mcgill.ca/~gary/rtaudio/release/rtaudio-4.1.2.tar.gz">Version 4.1.2</a></p>
+<p>Latest Release (30 August 2017): <a href="http://www.music.mcgill.ca/~gary/rtaudio/release/rtaudio-5.0.0.tar.gz">Version 5.0.0</a></p>
 <h1><a class="anchor" id="documentation"></a>
 Documentation Links</h1>
 <ol type="1">
@@ -66,7 +58,7 @@ Documentation Links</h1>
 </div></div><!-- contents -->
 <HR>
 <table><tr><td><img src="../images/mcgill.gif" width=165></td>
-  <td>&copy;2001-2016 Gary P. Scavone, McGill University. All Rights Reserved.<br>Maintained by <a href="http://www.music.mcgill.ca/~gary/">Gary P. Scavone</a>.</td></tr>
+  <td>&copy;2001-2017 Gary P. Scavone, McGill University. All Rights Reserved.<br>Maintained by <a href="http://www.music.mcgill.ca/~gary/">Gary P. Scavone</a>.</td></tr>
 </table>
 </BODY>
 </HTML>

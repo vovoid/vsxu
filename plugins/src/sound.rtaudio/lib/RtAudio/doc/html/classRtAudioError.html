@@ -25,7 +25,7 @@
 
 <p><code>#include &lt;<a class="el" href="RtAudio_8h_source.html">RtAudio.h</a>&gt;</code></p>
 
-<p>Inherits exception.</p>
+<p>Inherits runtime_error.</p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -51,29 +51,21 @@ Public Types</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a35a8c66eacf2929631cc64b4d80cac2e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a35a8c66eacf2929631cc64b4d80cac2e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRtAudioError.html#a35a8c66eacf2929631cc64b4d80cac2e">RtAudioError</a> (const std::string &amp;message, <a class="el" href="classRtAudioError.html#a85bdee746d5ba80d655ac98ded21d073">Type</a> type=<a class="el" href="classRtAudioError.html#a85bdee746d5ba80d655ac98ded21d073a395c8f5ff5e196c148308afa1b17b573">RtAudioError::UNSPECIFIED</a>)  throw ()</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRtAudioError.html#a35a8c66eacf2929631cc64b4d80cac2e">RtAudioError</a> (const std::string &amp;message, <a class="el" href="classRtAudioError.html#a85bdee746d5ba80d655ac98ded21d073">Type</a> type=<a class="el" href="classRtAudioError.html#a85bdee746d5ba80d655ac98ded21d073a395c8f5ff5e196c148308afa1b17b573">RtAudioError::UNSPECIFIED</a>)</td></tr>
 <tr class="memdesc:a35a8c66eacf2929631cc64b4d80cac2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The constructor. <br/></td></tr>
 <tr class="separator:a35a8c66eacf2929631cc64b4d80cac2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2ea5c2851f6bb5abe3ac3e1c33a5a70"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af2ea5c2851f6bb5abe3ac3e1c33a5a70"></a>
-virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRtAudioError.html#af2ea5c2851f6bb5abe3ac3e1c33a5a70">~RtAudioError</a> (void)  throw ()</td></tr>
-<tr class="memdesc:af2ea5c2851f6bb5abe3ac3e1c33a5a70"><td class="mdescLeft">&#160;</td><td class="mdescRight">The destructor. <br/></td></tr>
-<tr class="separator:af2ea5c2851f6bb5abe3ac3e1c33a5a70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0124bb90075cf3201865a0ea9b43a826"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0124bb90075cf3201865a0ea9b43a826"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRtAudioError.html#a0124bb90075cf3201865a0ea9b43a826">printMessage</a> (void) const   throw ()</td></tr>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRtAudioError.html#a0124bb90075cf3201865a0ea9b43a826">printMessage</a> (void) const </td></tr>
 <tr class="memdesc:a0124bb90075cf3201865a0ea9b43a826"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints thrown error message to stderr. <br/></td></tr>
 <tr class="separator:a0124bb90075cf3201865a0ea9b43a826"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09d238f227d41990773e1142fc06b144"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a09d238f227d41990773e1142fc06b144"></a>
-virtual const <a class="el" href="classRtAudioError.html#a85bdee746d5ba80d655ac98ded21d073">Type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRtAudioError.html#a09d238f227d41990773e1142fc06b144">getType</a> (void) const   throw ()</td></tr>
+virtual const <a class="el" href="classRtAudioError.html#a85bdee746d5ba80d655ac98ded21d073">Type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRtAudioError.html#a09d238f227d41990773e1142fc06b144">getType</a> (void) const </td></tr>
 <tr class="memdesc:a09d238f227d41990773e1142fc06b144"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the thrown error message type. <br/></td></tr>
 <tr class="separator:a09d238f227d41990773e1142fc06b144"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af1e84bd3ebc86210a723d1839b4f9cbf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af1e84bd3ebc86210a723d1839b4f9cbf"></a>
-virtual const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRtAudioError.html#af1e84bd3ebc86210a723d1839b4f9cbf">getMessage</a> (void) const   throw ()</td></tr>
-<tr class="memdesc:af1e84bd3ebc86210a723d1839b4f9cbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the thrown error message string. <br/></td></tr>
-<tr class="separator:af1e84bd3ebc86210a723d1839b4f9cbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0a4ebf95bcd3c6a6b1125bd5ad889da"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa0a4ebf95bcd3c6a6b1125bd5ad889da"></a>
-virtual const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRtAudioError.html#aa0a4ebf95bcd3c6a6b1125bd5ad889da">what</a> (void) const   throw ()</td></tr>
-<tr class="memdesc:aa0a4ebf95bcd3c6a6b1125bd5ad889da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the thrown error message as a c-style string. <br/></td></tr>
-<tr class="separator:aa0a4ebf95bcd3c6a6b1125bd5ad889da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37739d14784f5eef723557d0d583aca4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a37739d14784f5eef723557d0d583aca4"></a>
+virtual const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRtAudioError.html#a37739d14784f5eef723557d0d583aca4">getMessage</a> (void) const </td></tr>
+<tr class="memdesc:a37739d14784f5eef723557d0d583aca4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the thrown error message string. <br/></td></tr>
+<tr class="separator:a37739d14784f5eef723557d0d583aca4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Exception handling class for <a class="el" href="classRtAudio.html" title="Realtime audio i/o C++ classes.">RtAudio</a>. </p>
@@ -134,7 +126,7 @@ virtual const char *&#160;</td><td class="memItemRight" valign="bottom"><a class
 </div><!-- contents -->
 <HR>
 <table><tr><td><img src="../images/mcgill.gif" width=165></td>
-  <td>&copy;2001-2016 Gary P. Scavone, McGill University. All Rights Reserved.<br>Maintained by <a href="http://www.music.mcgill.ca/~gary/">Gary P. Scavone</a>.</td></tr>
+  <td>&copy;2001-2017 Gary P. Scavone, McGill University. All Rights Reserved.<br>Maintained by <a href="http://www.music.mcgill.ca/~gary/">Gary P. Scavone</a>.</td></tr>
 </table>
 </BODY>
 </HTML>

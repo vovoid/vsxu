@@ -55,10 +55,10 @@ public:
    * @param upcoming
    * @return true when rendering throug a fader
    */
-  bool render(state*& current, state* upcoming)
+  bool render(state*& current, state* upcoming, vsx_input_event_queue* event_queue)
   {
     buf_upcoming.begin_capture_to_buffer();
-      upcoming->render();
+      upcoming->render(event_queue);
       glColorMask(false, false, false, true);
       glClearColor(0,0,0,1);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -81,7 +81,7 @@ public:
     // begin capture current
     buf_current.begin_capture_to_buffer();
 
-      current->render();
+      current->render(event_queue);
       glColorMask(false, false, false, true);
       glClearColor(0,0,0,1);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

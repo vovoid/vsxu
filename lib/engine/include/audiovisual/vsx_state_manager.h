@@ -63,6 +63,9 @@ private:
   // currently active state
   state* state_current = 0x0;
 
+  // event queue
+  vsx_input_event_queue* event_queue = 0x0;
+
   vsx_string<> config_dir;
   vsx_string<> visual_path;
 
@@ -93,7 +96,7 @@ private:
       // preload where applicable
       if (option_preload_all == true)
         while ( !(*states_iter)->done_loading() )
-          (*states_iter)->render();
+          (*states_iter)->render(event_queue);
     }
     states = new_statelist;
   }
@@ -115,6 +118,11 @@ public:
   {
     for (auto it = states.begin(); it != states.end(); ++it)
       delete *it;
+  }
+
+  void set_event_queue(vsx_input_event_queue* queue)
+  {
+    event_queue = queue;
   }
 
   std::vector<state*>& states_get()
@@ -306,7 +314,7 @@ public:
   bool render_change()
   {
     reqrv( *states_iter != state_current, false); // change is on the way
-    return faders.render( state_current, *states_iter );
+    return faders.render( state_current, *states_iter, event_queue );
   }
 
   void render()
@@ -323,7 +331,7 @@ public:
       system_message += states[i]->system_message_get();
 
     req( !render_change());
-    state_current->render();
+    state_current->render(event_queue);
   }
 
   void load_individual_visuals(vsx_string<>& base_path, vsx_string<> visual_path = "visuals_player")

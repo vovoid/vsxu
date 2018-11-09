@@ -2,6 +2,8 @@
 #define RTAUDIO_RECORD_H
 
 #include <exception>
+#include <vsx_argvector.h>
+#include<RtAudio/RtAudio.h>
 
 float fftbuf[1024];
 size_t fftbuf_it = 0;
@@ -171,6 +173,11 @@ vsx_string<> setup_rtaudio_record()
 
   RtAudio::StreamParameters parameters;
   parameters.deviceId = padc_record->getDefaultInputDevice();
+
+  if (vsx_argvector::get_instance()->has_param_with_value("audio_input_device"))
+  {
+    parameters.deviceId = vsx_string_helper::s2i(vsx_argvector::get_instance()->get_param_value("audio_input_device"));
+  }
   parameters.nChannels = 2;
   parameters.firstChannel = 0;
   unsigned int sampleRate = 44100;
@@ -193,8 +200,13 @@ vsx_string<> setup_rtaudio_record()
     );
     padc_record->startStream();
   }
+  catch (RtAudioError& error)
+  {
+    vsx_printf(L"RTAudio Error: %hs\n", error.getMessage().c_str());
+  }
   catch (...)
   {
+
     return "!ERROR: Something went wrong setting up audio recording.\n\n"
         "This could be caused by not having anything plugged in,\n"
         "or you might need to enable stereo mix on your sound card recording settings.\n"

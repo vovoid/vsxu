@@ -131,10 +131,11 @@ public:
     return engine->system_message_get();
   }
 
-  void render()
+  void render(vsx_input_event_queue* event_queue)
   {
     req(engine);
     engine->process_message_queue(&cmd_in, &cmd_out);
+    engine->set_input_event_queue(event_queue);
     engine->render();
     cmd_out.clear_normal();
   }

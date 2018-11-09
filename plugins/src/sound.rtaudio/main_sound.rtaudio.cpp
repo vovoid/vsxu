@@ -160,9 +160,14 @@ vsx_module* MOD_CM(unsigned long module, void* args)
     // asio
     rtaudio_type = RtAudio::WINDOWS_ASIO;
   } else
+  if (internal_args->has_param("sound_type_ds"))
   {
     // directsound
     rtaudio_type = RtAudio::WINDOWS_DS;
+  } else
+  {
+    // wasapi
+    rtaudio_type = RtAudio::WINDOWS_WASAPI;
   }
   #endif
   switch(module)

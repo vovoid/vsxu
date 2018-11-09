@@ -20,7 +20,7 @@
 <div class="contents">
 <div class="textblock"><code>#include &lt;string&gt;</code><br/>
 <code>#include &lt;vector&gt;</code><br/>
-<code>#include &lt;exception&gt;</code><br/>
+<code>#include &lt;stdexcept&gt;</code><br/>
 <code>#include &lt;iostream&gt;</code><br/>
 <code>#include &lt;sstream&gt;</code><br/>
 </div>
@@ -103,12 +103,14 @@ Typedefs</h2></td></tr>
 <li><em>RTAUDIO_MINIMIZE_LATENCY:</em> Attempt to set stream parameters for lowest possible latency.</li>
 <li><em>RTAUDIO_HOG_DEVICE:</em> Attempt grab device for exclusive use.</li>
 <li><em>RTAUDIO_ALSA_USE_DEFAULT:</em> Use the "default" PCM device (ALSA only).</li>
+<li><em>RTAUDIO_JACK_DONT_CONNECT:</em> Do not automatically connect ports (JACK only).</li>
 </ul>
 <p>By default, <a class="el" href="classRtAudio.html" title="Realtime audio i/o C++ classes.">RtAudio</a> streams pass and receive audio data from the client in an interleaved format. By passing the RTAUDIO_NONINTERLEAVED flag to the openStream() function, audio data will instead be presented in non-interleaved buffers. In this case, each buffer argument in the RtAudioCallback function will point to a single array of data, with <code>nFrames</code> samples for each channel concatenated back-to-back. For example, the first sample of data for the second channel would be located at index <code>nFrames</code> (assuming the <code>buffer</code> pointer was recast to the correct data type for the stream).</p>
 <p>Certain audio APIs offer a number of parameters that influence the I/O latency of a stream. By default, <a class="el" href="classRtAudio.html" title="Realtime audio i/o C++ classes.">RtAudio</a> will attempt to set these parameters internally for robust (glitch-free) performance (though some APIs, like Windows Direct Sound, make this difficult). By passing the RTAUDIO_MINIMIZE_LATENCY flag to the openStream() function, internal stream settings will be influenced in an attempt to minimize stream latency, though possibly at the expense of stream performance.</p>
 <p>If the RTAUDIO_HOG_DEVICE flag is set, <a class="el" href="classRtAudio.html" title="Realtime audio i/o C++ classes.">RtAudio</a> will attempt to open the input and/or output stream device(s) for exclusive use. Note that this is not possible with all supported audio APIs.</p>
 <p>If the RTAUDIO_SCHEDULE_REALTIME flag is set, <a class="el" href="classRtAudio.html" title="Realtime audio i/o C++ classes.">RtAudio</a> will attempt to select realtime scheduling (round-robin) for the callback thread.</p>
-<p>If the RTAUDIO_ALSA_USE_DEFAULT flag is set, <a class="el" href="classRtAudio.html" title="Realtime audio i/o C++ classes.">RtAudio</a> will attempt to open the "default" PCM device when using the ALSA API. Note that this will override any specified input or output device id. </p>
+<p>If the RTAUDIO_ALSA_USE_DEFAULT flag is set, <a class="el" href="classRtAudio.html" title="Realtime audio i/o C++ classes.">RtAudio</a> will attempt to open the "default" PCM device when using the ALSA API. Note that this will override any specified input or output device id.</p>
+<p>If the RTAUDIO_JACK_DONT_CONNECT flag is set, <a class="el" href="classRtAudio.html" title="Realtime audio i/o C++ classes.">RtAudio</a> will not attempt to automatically connect the ports of the client to the audio device. </p>
 
 </div>
 </div>
@@ -182,7 +184,7 @@ Typedefs</h2></td></tr>
 </div><!-- contents -->
 <HR>
 <table><tr><td><img src="../images/mcgill.gif" width=165></td>
-  <td>&copy;2001-2016 Gary P. Scavone, McGill University. All Rights Reserved.<br>Maintained by <a href="http://www.music.mcgill.ca/~gary/">Gary P. Scavone</a>.</td></tr>
+  <td>&copy;2001-2017 Gary P. Scavone, McGill University. All Rights Reserved.<br>Maintained by <a href="http://www.music.mcgill.ca/~gary/">Gary P. Scavone</a>.</td></tr>
 </table>
 </BODY>
 </HTML>

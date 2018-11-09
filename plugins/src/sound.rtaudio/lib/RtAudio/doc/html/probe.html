@@ -53,6 +53,7 @@
 <div class="line">  <span class="keywordtype">bool</span> <a class="code" href="structRtAudio_1_1DeviceInfo.html#a5365245e73ffe29a05734de4474acd58">isDefaultOutput</a>;                  <span class="comment">// true if this is the default output device.</span></div>
 <div class="line">  <span class="keywordtype">bool</span> <a class="code" href="structRtAudio_1_1DeviceInfo.html#a7c8aca084bd908799b6be5954b80def2">isDefaultInput</a>;                   <span class="comment">// true if this is the default input device.</span></div>
 <div class="line">  std::vector&lt;unsigned int&gt; <a class="code" href="structRtAudio_1_1DeviceInfo.html#afa65f5f92f66ce7aacd3ff35e11b230f">sampleRates</a>; <span class="comment">// Supported sample rates.</span></div>
+<div class="line">  <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="structRtAudio_1_1DeviceInfo.html#ae9f35de296b33ae1f4e7baab8fd3be6e">preferredSampleRate</a>;      <span class="comment">// Preferred sample rate, eg. for WASAPI the system sample rate.</span></div>
 <div class="line">  <a class="code" href="RtAudio_8h.html#aafca92882d25915560018873221e44b8" title="RtAudio data format type.">RtAudioFormat</a> <a class="code" href="structRtAudio_1_1DeviceInfo.html#a23251b549b89b2fe04a57fcd7cb76ea4">nativeFormats</a>;           <span class="comment">// Bit mask of supported data formats.</span></div>
 <div class="line">};</div>
 </div><!-- fragment --><p>The following data formats are defined and fully supported by <a class="el" href="classRtAudio.html" title="Realtime audio i/o C++ classes.">RtAudio</a>:</p>
@@ -69,7 +70,7 @@
 </div></div><!-- contents -->
 <HR>
 <table><tr><td><img src="../images/mcgill.gif" width=165></td>
-  <td>&copy;2001-2016 Gary P. Scavone, McGill University. All Rights Reserved.<br>Maintained by <a href="http://www.music.mcgill.ca/~gary/">Gary P. Scavone</a>.</td></tr>
+  <td>&copy;2001-2017 Gary P. Scavone, McGill University. All Rights Reserved.<br>Maintained by <a href="http://www.music.mcgill.ca/~gary/">Gary P. Scavone</a>.</td></tr>
 </table>
 </BODY>
 </HTML>

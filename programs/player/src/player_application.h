@@ -36,6 +36,7 @@ class player_application
 {
   vsx_overlay* overlay = 0x0;
   bool no_overlay = false;
+  vsx_input_event_queue event_queue;
 
 public:
 
@@ -70,8 +71,10 @@ public:
   {
     no_overlay = vsx_argvector::get_instance()->has_param("no");
 
+
     vsx_module_list_manager::get()->module_list = vsx_module_list_factory_create();
     vsx::engine::audiovisual::state_manager::create();
+    vsx::engine::audiovisual::state_manager::get()->set_event_queue( &event_queue );
 
     // create a new manager
     vsx::engine::audiovisual::state_manager::get()->option_preload_all = vsx_argvector::get_instance()->has_param("pl");
@@ -118,6 +121,13 @@ public:
       vsx_application_control::get_instance()->message_box_title = "Error";
       vsx_application_control::get_instance()->message_box_message = vsx::engine::audiovisual::state_manager::get()->system_message;
     }
+
+    event_queue.reset();
+  }
+
+  void input_event(const vsx_input_event& event)
+  {
+    event_queue.add(event);
   }
 
   void event_key_down(long key)

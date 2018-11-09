@@ -35,7 +35,7 @@ Compiling</h1>
 <p class="endtd"></p>
 </td></tr>
 <tr>
-<td>Macintosh OS-X </td><td>CoreAudio </td><td>RtApiCore </td><td>__MACOSX_CORE__ </td><td><code>pthread, CoreAudio</code> </td><td><code>g++ -Wall -D__MACOSX_CORE__ -o audioprobe audioprobe.cpp RtAudio.cpp -framework CoreAudio -lpthread</code>  </td></tr>
+<td>Macintosh OS-X </td><td>CoreAudio </td><td>RtApiCore </td><td>__MACOSX_CORE__ </td><td><code>pthread, CoreAudio</code> </td><td><code>g++ -Wall -D__MACOSX_CORE__ -o audioprobe audioprobe.cpp RtAudio.cpp -framework CoreAudio -framework CoreFoundation -lpthread</code>  </td></tr>
 <tr>
 <td>Windows </td><td>Direct Sound </td><td>RtApiDs </td><td>__WINDOWS_DS__ </td><td><code>dsound.lib (ver. 5.0 or higher), multithreaded</code> </td><td>MinGW: <code>g++ -Wall -D__WINDOWS_DS__ -o audioprobe audioprobe.cpp RtAudio.cpp -lole32 -lwinmm -ldsound</code>  </td></tr>
 <tr>
@@ -47,7 +47,7 @@ Compiling</h1>
 </div></div><!-- contents -->
 <HR>
 <table><tr><td><img src="../images/mcgill.gif" width=165></td>
-  <td>&copy;2001-2016 Gary P. Scavone, McGill University. All Rights Reserved.<br>Maintained by <a href="http://www.music.mcgill.ca/~gary/">Gary P. Scavone</a>.</td></tr>
+  <td>&copy;2001-2017 Gary P. Scavone, McGill University. All Rights Reserved.<br>Maintained by <a href="http://www.music.mcgill.ca/~gary/">Gary P. Scavone</a>.</td></tr>
 </table>
 </BODY>
 </HTML>
