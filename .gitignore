@@ -279,3 +279,7 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+
+# Files created by .create_appimage.sh
+out/
+appimage/build-appimage/
