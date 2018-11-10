@@ -71,6 +71,7 @@ public:
   {
     no_overlay = vsx_argvector::get_instance()->has_param("no");
 
+    vsx_application_control::get_instance()->mouse.hide_cursor();
 
     vsx_module_list_manager::get()->module_list = vsx_module_list_factory_create();
     vsx::engine::audiovisual::state_manager::create();
@@ -100,6 +101,7 @@ public:
   void draw()
   {
     update_window_title();
+    vsx_application_control::get_instance()->mouse.hide_cursor();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     vsx::engine::audiovisual::state_manager::get()->render();

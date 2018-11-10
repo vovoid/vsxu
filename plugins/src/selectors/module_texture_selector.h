@@ -192,7 +192,7 @@ public:
 
     info->in_param_spec =
       "index:float,"
-      "inputs:enum?0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16&nc=1,"
+      "inputs:enum?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16&nc=1,"
       + i_in_param_string +
       "options:complex"
       "{"
@@ -654,7 +654,7 @@ public:
   //Update Number of Inputs
   void UpdateInputs()
   {
-    i_curr_inputs = inputs->get() - 1;
+    i_curr_inputs = inputs->get();
     if(i_prev_inputs != i_curr_inputs)
     {
       i_am_ready = false;
