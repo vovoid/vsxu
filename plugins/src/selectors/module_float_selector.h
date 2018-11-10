@@ -133,7 +133,7 @@ public:
 
     info->in_param_spec =
       "index:float,"
-      "inputs:enum?0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16&nc=1,"
+      "inputs:enum?1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16&nc=1,"
       + i_in_param_string +
       "options:complex{"
         "wrap:enum?None_Zero|None_Freeze|Wrap,"
@@ -156,7 +156,7 @@ public:
     index = (vsx_module_param_float*)in_parameters.create(VSX_MODULE_PARAM_ID_FLOAT, "index");
     index->set(i_index);
     inputs = (vsx_module_param_int*)in_parameters.create(VSX_MODULE_PARAM_ID_INT, "inputs");
-    inputs->set((float)(i_curr_inputs + 1)); //converts 0-based index to 1-based index!
+    inputs->set((float)(i_curr_inputs)); //converts 0-based index to 1-based index!
 
     float_x.clear();       //Create the array and the param_string for float_x
     i_paramString.str("");
@@ -381,7 +381,7 @@ public:
   //Update Number of Inputs
   void UpdateInputs()
   {
-    i_curr_inputs = inputs->get() - 1;
+    i_curr_inputs = inputs->get();
     if(i_prev_inputs != i_curr_inputs)
     {
       i_am_ready = false;

@@ -222,23 +222,15 @@ public:
       case 1:
         scroll_pos -= dt*0.25f;
         #if PLATFORM == PLATFORM_WINDOWS
-        myf->print(vsx_vector3<>(-0.8,0.4f),
-          "Doesn't VSX react to sound? If sound isn't set up properly in Windows\n"
-          "some visuals might be totally black! Please check http://www.vsxu.com/documentation/faq\n"
-          "and select \"VSXu is not reacting to sound\" for instructions!\n"
-          "\n"
-          "In brief, what you need to do is set the recording properties of the\n"
-          "mixer to something like 'Stereo Mix' or similar. Some soundcards only allow\n"
-          "one recording channel to be active at a time, others allow all simultaneously.\n"
-          "\n"
-          "Keyboard shortcuts:\n"
-          " F                     - display fps and fx level information\n"
-          " R                     - toggle randomization mode\n"
-          " Ctrl+R                - pick a random visual\n"
-          " arrow keys left/right - switch visuals\n"
-          " arrow keys up/down    - change sound reactivity/FX level (per visual)\n"
-          " pgup/pgdn             - increase/decrease speed (per visual)\n"
-        ,0.05);
+        myf->print(vsx_vector3<>(-0.8f,0.4f),
+          "Keyboard shortcuts:\n\n"
+          " [F]                     - display fps and fx level information\n"
+          " [R]                     - toggle randomizer\n"
+          " [Ctrl] + [R]            - go to random visual\n"
+          " Left / Right            - switch visuals\n"
+          " Up / Down               - change sound reactivity for the current effect / visual\n"
+          " PgUp / PgDn             - increase/decrease speed for the current effect / visual\n"
+        ,0.05f);
         #endif
         #if PLATFORM == PLATFORM_LINUX
         myf->print(vsx_vector3<>(-0.8,0.4f),
@@ -257,11 +249,11 @@ public:
           " arrow keys left/right - switch visuals\n"
           " arrow keys up/down    - change sound reactivity/FX level (per visual)\n"
           " pgup/pgdn             - increase/decrease speed (per visual)\n"
-          ,0.05);
+          ,0.05f);
         #endif
         break;
       case 2:
-        myf->print(vsx_vector3<>(-0.8,0.4),
+        myf->print(vsx_vector3<>(-0.8f,0.4f),
           "Current visual  :\n"
           "Current FPS     :\n"
           "FX level        :\n"
