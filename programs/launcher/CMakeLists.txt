@@ -61,6 +61,9 @@ set(SOURCES
 
 file(GLOB GLOB_RESULT src/*.cpp)
 set(SOURCES ${SOURCES} ${GLOB_RESULT})
+if (NOT VSXU_STATIC EQUAL 1)
+  set(SOURCES ${SOURCES} src/RtAudio/RtAudio.cpp)
+endif()
 
 # Solve the problem with DPI scaling
 # since we want our own rc file
@@ -149,6 +152,7 @@ if(UNIX)
     vsx_engine_graphics
     vsx_application
     ${VSXU_GFX_LIB_LIBS}
+    ${AUDIO_LIBRARIES}
     rt
   )
 endif(UNIX)
@@ -168,6 +172,7 @@ if (WIN32)
     vsx_widget
     vsx_application
     ${VSXU_GFX_LIB_LIBS}
+    ${AUDIO_LIBRARIES}
   )
 endif()
 

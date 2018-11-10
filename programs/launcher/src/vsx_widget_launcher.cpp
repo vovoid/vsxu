@@ -138,17 +138,17 @@ void vsx_widget_launcher::init()
 
   int rtaudio_type = 0;
   #if (PLATFORM == PLATFORM_LINUX)
-    if (vsx_argvector::get_instance->has_param("sound_type_alsa"))
+    if (vsx_argvector::get_instance()->has_param("sound_type_alsa"))
     {
       // ALSA
       rtaudio_type = RtAudio::LINUX_ALSA;
     } else
-    if (vsx_argvector::get_instance->has_param("sound_type_jack"))
+    if (vsx_argvector::get_instance()->has_param("sound_type_jack"))
     {
       // JACK
       rtaudio_type = RtAudio::UNIX_JACK;
     } else
-    if (vsx_argvector::get_instance->has_param("sound_type_oss"))
+    if (vsx_argvector::get_instance()->has_param("sound_type_oss"))
     {
       // OSS
       rtaudio_type = RtAudio::LINUX_OSS;
