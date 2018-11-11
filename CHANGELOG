@@ -8,6 +8,20 @@ Welcome to the Changelog of the Vovoid VSXu Project
 ***********************************************************************************************************************
 
   ######################################
+  VSXu 0.6.3 (November 2018)
+  Sponsor: Lobro Watch
+  ######################################
+  Bug fix / Patch release
+
+  + new visual: Glowstick Hyperspace sponsored by Lobro Watch (twitch.tv/lobrowatch)
+  + support for choosing sound input device in launcher. Works for artiste and player.
+  + Windows: new default sound backend for windows which allows listener to visualize straight off of outputs
+  + Linux: Better handling of App Image
+  ' Bug fix (unhandled exception) in Akai APC 40 code
+  ' Selectors re-introduced since bugs fixed
+
+
+  ######################################
   VSXu 0.6.2 (August 2017)
   ######################################
   Bug fix / Patch release
