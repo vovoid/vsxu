@@ -265,7 +265,7 @@ public:
           "RAM usage (total):\n"
           ,
           "ascii",
-          0.06
+          0.05
         );
         myf->print(
           vsx_vector3<>(-0.1,0.4),
@@ -279,7 +279,7 @@ public:
           vsx::engine::audiovisual::state_manager::get()->get_meta_upcoming_visual_name() + "\n" +
           vsx_string_helper::i2s( perf.memory_currently_used() ) + " MB\n"
           ,
-          0.06
+          0.05
         );
       break;
     };

@@ -154,6 +154,7 @@ if(UNIX)
     ${VSXU_GFX_LIB_LIBS}
     ${AUDIO_LIBRARIES}
     rt
+    
   )
 endif(UNIX)
 
