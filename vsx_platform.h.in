@@ -66,7 +66,7 @@
         #define PLATFORM_NAME                                   "GNU / Linux"
         #define PLATFORM_FAMILY                                 PLATFORM_FAMILY_UNIX
         #define PLATFORM_SHARED_FILES                           vsx_string<>(get_exec_path().c_str()) + "/../share/vsxu/"
-        #define VSXU_PLUGIN_LOCATION                           vsx_string<>(get_exec_path().c_str()) + "/../lib/vsxu/plugins"
+        #define VSXU_PLUGIN_LOCATION                           vsx_string<>(get_exec_path().c_str()) + "/../lib@LIB_SUFFIX@/vsxu/plugins"
         #define PLATFORM_DLL_SUFFIX                             ".so"
         #ifdef PLATFORM_SHARED_FILES_STL
           #define PLATFORM_SHARED_FILES_STLSTRING               get_exec_path() + std::string("/../share/vsxu/")
