@@ -4,8 +4,8 @@ APPVERSION=0.6.3
 APPDIR=$APPNAME.AppDir
 
 # build on single core for reliability
-CONCURENT=1
-#CONCURENT=`nproc`
+CONCURRENT=1
+#CONCURRENT=`nproc`
 
 # stop on error
 set -e
@@ -66,7 +66,7 @@ cp $APPNAME.png build-appimage/$APPDIR/
 
 pushd build-appimage
 cmake -DCMAKE_INSTALL_PREFIX=$PWD/$APPDIR/usr $SRCDIR
-make -j$CONCURENT
+make -j$CONCURRENT
 make install
 
 #Copy deps - Running multiple times to catch all dependencies
