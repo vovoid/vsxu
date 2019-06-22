@@ -3,6 +3,16 @@ APPNAME=VSXu
 APPVERSION=0.6.3
 APPDIR=$APPNAME.AppDir
 
+# build on single core for reliability
+CONCURENT=1
+#CONCURENT=`nproc`
+
+# stop on error
+set -e
+
+# debug
+#set -x
+
 SRCDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
 
 function copy_deps {
@@ -55,9 +65,9 @@ cp $APPNAME.desktop build-appimage/$APPDIR/
 cp $APPNAME.png build-appimage/$APPDIR/
 
 pushd build-appimage
-cmake -DCMAKE_INSTALL_PREFIX=$PWD/$APPDIR/usr $SRCDIR || exit -1
-make -j`nproc` || exit -1
-make install || exit -1
+cmake -DCMAKE_INSTALL_PREFIX=$PWD/$APPDIR/usr $SRCDIR
+make -j$CONCURENT
+make install
 
 #Copy deps - Running multiple times to catch all dependencies
 copy_deps $APPDIR
@@ -66,11 +76,12 @@ copy_deps $APPDIR
 
 #Delete blacklisted libs
 mv $APPDIR/usr/lib/x86_64-linux-gnu/pulseaudio/* $APPDIR/usr/lib/x86_64-linux-gnu/
-rm -v $APPDIR/usr/lib/x86_64-linux-gnu/lib{xcb,drm,X,xkb,xshm}*.so.*
+rm -v $APPDIR/usr/lib/x86_64-linux-gnu/lib{xcb,drm,X,xkb,xshm}*.so.* || true
 #rm -vrf $APPDIR/usr/lib/x86_64-linux-gnu/mesa/
 delete_blacklisted $APPDIR
 
 GLIBC_VERSION=`find . -name *.so -or -name *.so.* -or -type f -executable  -exec readelf -s '{}' 2>/dev/null \; | sed -n 's/.*@GLIBC_//p'| awk '{print $1}' | sort --version-sort | tail -n 1`
 $SRCDIR/appimage/appimagetool $PWD/$APPDIR $SRCDIR/out/$APPNAME-$APPVERSION.glibc$GLIBC_VERSION.AppImage
+ls -la $PWD/$APPDIR $SRCDIR/out/$APPNAME-$APPVERSION.glibc$GLIBC_VERSION.AppImage
 popd
 
