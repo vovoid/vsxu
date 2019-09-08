@@ -108,6 +108,13 @@ include (cmake/optimization.txt)
 add_definitions(-DVSXU_INSTALL_LIB_DIR="${VSXU_INSTALL_LIB_DIR}")
 #add_definitions(-DVSX_VECTOR_TYPE_DOUBLE=1)
 
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/vsx_platform.h.in
+                ${CMAKE_CURRENT_SOURCE_DIR}/vsx_platform.h
+                @ONLY)
+
+INSTALL (FILES ${CMAKE_CURRENT_SOURCE_DIR}/vsx_platform.h
+         DESTINATION ${VSXU_INSTALL_INCLUDE_DIR}/ )
+
 
 
 ################################################################################
